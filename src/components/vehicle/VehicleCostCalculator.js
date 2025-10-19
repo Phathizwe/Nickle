@@ -15,7 +15,7 @@ import { db } from '../../lib/firebase';
 import BasicInformation from './components/BasicInformation';
 import MonthlyExpenses from './components/MonthlyExpenses';
 import PurchaseDecisions from './components/PurchaseDecisions';
-import Results from './components/Results';
+import ResultsEnhanced from './components</ResultsEnhanced>hanced';
 import SavedCalculations from './components/SavedCalculations';
 import ReportButton from '../../components/shared/ReportButton';
 
@@ -437,7 +437,7 @@ const VehicleCostCalculator = ({ onBack, initialNetSalary = '', initialBudgetPer
 
         {affordableCarPrice > 0 && (
           <>
-            <Results
+            <ResultsEnhanced
               affordableCarPrice={affordableCarPrice}
               estimatedMonthlyRepayment={estimatedMonthlyRepayment}
               estimatedMonthlyExpenses={estimatedMonthlyExpenses}

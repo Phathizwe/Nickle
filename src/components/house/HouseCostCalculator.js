@@ -15,7 +15,7 @@ import { db } from '../../lib/firebase';
 import BasicInformation from './components/BasicInformation';
 import MonthlyExpenses from './components/MonthlyExpenses';
 import LoanDetails from './components/LoanDetails';
-import Results from './components/Results';
+import ResultsEnhanced from './component</ResultsEnhanced>nhanced';
 import SavedCalculations from './components/SavedCalculations';
 import CalculateButton from './components/CalculateButton';
 import ReportButton from '../../components/shared/ReportButton';
@@ -525,7 +525,7 @@ const HouseCostCalculator = ({ onBack, initialNetSalary = '', initialBudgetPerce
 
         {affordableHousePrice > 0 && (
           <>
-            <Results
+            <ResultsEnhanced
               affordableHousePrice={affordableHousePrice}
               downPayment={downPayment}
               estimatedMonthlyRepayment={estimatedMonthlyRepayment}

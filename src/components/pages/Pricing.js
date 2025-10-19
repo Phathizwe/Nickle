@@ -6,9 +6,10 @@ import { Card } from "../ui/card";
 import Meta from '../SEO/Meta';
 import { Check, Loader2 } from "lucide-react";
 import { PremiumDialog, PremiumFeatureDialog } from '../premium';
+import PricingCard from './PricingCard';
 import { useToast } from '../ui/use-toast';
 
-// PricingCard component remains the same...
+
 
 export default function Pricing() {
   // Add debugging log
