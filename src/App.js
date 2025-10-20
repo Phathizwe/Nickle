@@ -17,6 +17,7 @@ import Pricing from './components/pages/Pricing';
 import Start from './components/pages/Start';
 import HomePageEmotional from './components/home/HomePageEmotional';
 import HomePageModern from './components/home/HomePageModern';
+import CashflowBudget from './components/budget/CashflowBudget';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { Toaster } from './components/ui/toaster';
@@ -165,6 +166,15 @@ function AppContent() {
                     } 
                   />
                   
+                  <Route 
+                    path="/budget" 
+                    element={
+                      <LayoutWrapper>
+                        <CashflowBudget />
+                      </LayoutWrapper>
+                    } 
+                  />
+
                   <Route 
                     path="/vehicle" 
                     element={

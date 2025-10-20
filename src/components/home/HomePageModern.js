@@ -154,25 +154,22 @@ const HomePageModern = () => {
             </CardContent>
           </Card>
 
-          {/* Budget Overview - Only show if they have calculations */}
+          {/* Budget Overview - Show link to full cashflow budget */}
           {showBudget && netSalary && (
             <Card className="mb-8 shadow-xl border-2 border-purple-200">
               <CardContent className="p-6 md:p-8">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
                     <PieChart className="h-6 w-6 text-purple-600" />
-                    Your Budget Overview
+                    Quick Overview
                   </h2>
-                  {user && (
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="flex items-center gap-2"
-                    >
-                      <Save className="h-4 w-4" />
-                      Saved
-                    </Button>
-                  )}
+                  <Button 
+                    onClick={() => navigate('/budget')}
+                    className="bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2"
+                  >
+                    View Full Budget
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
                 </div>
 
                 {/* Summary Cards */}
