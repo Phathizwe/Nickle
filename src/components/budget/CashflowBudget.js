@@ -176,20 +176,15 @@ const CashflowBudget = () => {
             </div>
 
             <div className="space-y-2">
-              {/* House */}
-              {houseBudget && (
-                <div className="flex items-center justify-between py-3 px-3 bg-white rounded-lg border border-gray-200">
-                  <div className="flex items-center gap-3 flex-1">
-                    <div className="p-2 bg-green-100 rounded-lg">
+              {/* House - Detailed Breakdown */}
+              {houseBudget && houseBudget.breakdown && (
+                <div className="space-y-2">
+                  {/* House Header */}
+                  <div className="flex items-center justify-between py-2 px-3 bg-green-50 rounded-lg">
+                    <div className="flex items-center gap-2">
                       <HomeIcon className="h-5 w-5 text-green-600" />
+                      <span className="font-bold text-gray-900">House</span>
                     </div>
-                    <div>
-                      <p className="font-semibold text-gray-900">House</p>
-                      <p className="text-xs text-gray-500">Bond + Rates + Insurance + Maintenance</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="font-bold text-gray-900">{formatCurrency(houseExpenses)}</span>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -199,23 +194,38 @@ const CashflowBudget = () => {
                       <Edit2 className="h-4 w-4" />
                     </Button>
                   </div>
+                  
+                  {/* House Line Items */}
+                  <div className="pl-8 space-y-1">
+                    <div className="flex items-center justify-between py-2 px-3 bg-white rounded-lg">
+                      <span className="text-gray-700 text-sm">Bond Repayment</span>
+                      <span className="font-semibold text-gray-900">{formatCurrency(houseBudget.breakdown.bondRepayment)}</span>
+                    </div>
+                    <div className="flex items-center justify-between py-2 px-3 bg-white rounded-lg">
+                      <span className="text-gray-700 text-sm">Rates & Taxes</span>
+                      <span className="font-semibold text-gray-900">{formatCurrency(houseBudget.breakdown.rates)}</span>
+                    </div>
+                    <div className="flex items-center justify-between py-2 px-3 bg-white rounded-lg">
+                      <span className="text-gray-700 text-sm">Home Insurance</span>
+                      <span className="font-semibold text-gray-900">{formatCurrency(houseBudget.breakdown.insurance)}</span>
+                    </div>
+                    <div className="flex items-center justify-between py-2 px-3 bg-white rounded-lg">
+                      <span className="text-gray-700 text-sm">Maintenance</span>
+                      <span className="font-semibold text-gray-900">{formatCurrency(houseBudget.breakdown.maintenance)}</span>
+                    </div>
+                  </div>
                 </div>
               )}
 
-              {/* Car */}
-              {carBudget && (
-                <div className="flex items-center justify-between py-3 px-3 bg-white rounded-lg border border-gray-200">
-                  <div className="flex items-center gap-3 flex-1">
-                    <div className="p-2 bg-blue-100 rounded-lg">
+              {/* Car - Detailed Breakdown */}
+              {carBudget && carBudget.breakdown && (
+                <div className="space-y-2">
+                  {/* Car Header */}
+                  <div className="flex items-center justify-between py-2 px-3 bg-blue-50 rounded-lg">
+                    <div className="flex items-center gap-2">
                       <Car className="h-5 w-5 text-blue-600" />
+                      <span className="font-bold text-gray-900">Car</span>
                     </div>
-                    <div>
-                      <p className="font-semibold text-gray-900">Car</p>
-                      <p className="text-xs text-gray-500">Repayment + Insurance + Petrol</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="font-bold text-gray-900">{formatCurrency(carExpenses)}</span>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -224,6 +234,22 @@ const CashflowBudget = () => {
                     >
                       <Edit2 className="h-4 w-4" />
                     </Button>
+                  </div>
+                  
+                  {/* Car Line Items */}
+                  <div className="pl-8 space-y-1">
+                    <div className="flex items-center justify-between py-2 px-3 bg-white rounded-lg">
+                      <span className="text-gray-700 text-sm">Monthly Repayment</span>
+                      <span className="font-semibold text-gray-900">{formatCurrency(carBudget.breakdown.repayment)}</span>
+                    </div>
+                    <div className="flex items-center justify-between py-2 px-3 bg-white rounded-lg">
+                      <span className="text-gray-700 text-sm">Insurance</span>
+                      <span className="font-semibold text-gray-900">{formatCurrency(carBudget.breakdown.insurance)}</span>
+                    </div>
+                    <div className="flex items-center justify-between py-2 px-3 bg-white rounded-lg">
+                      <span className="text-gray-700 text-sm">Petrol</span>
+                      <span className="font-semibold text-gray-900">{formatCurrency(carBudget.breakdown.petrol)}</span>
+                    </div>
                   </div>
                 </div>
               )}

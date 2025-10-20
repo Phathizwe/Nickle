@@ -69,7 +69,14 @@ const HouseCalculatorMobile = () => {
       bondRegistration: Math.round(bondRegistration),
       bondInitiation,
       totalUpfront: Math.round(downPayment + transferDuty + bondRegistration + bondInitiation),
-      isWithinBudget: availableForRepayment > 0
+      isWithinBudget: availableForRepayment > 0,
+      // Detailed breakdown for cashflow statement
+      breakdown: {
+        bondRepayment: Math.round(availableForRepayment),
+        rates: parseFloat(rates),
+        insurance: parseFloat(insurance),
+        maintenance: parseFloat(maintenance)
+      }
     };
   };
 
