@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '../ui/card';
+import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { ModernSlider } from '../ui/modern-slider';
 import { Car, Sparkles, AlertCircle, CheckCircle2, ArrowLeft, ChevronDown, ChevronUp, Download } from 'lucide-react';
