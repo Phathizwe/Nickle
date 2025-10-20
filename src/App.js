@@ -4,6 +4,7 @@ import { useToast } from './components/ui/use-toast';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import HomePage from './components/home/HomePage';
 import HouseCostCalculator from './components/house/HouseCostCalculator';
+import HouseCalculatorEmotional from './components/house/HouseCalculatorEmotional';
 import VehicleCostCalculator from './components/vehicle/VehicleCostCalculator';
 import VehicleCalculatorEmotional from './components/vehicle/VehicleCalculatorEmotional';
 import About from './components/pages/About';
@@ -132,11 +133,19 @@ function AppContent() {
                     path="/house-calculator" 
                     element={
                       <LayoutWrapper>
-                        <HouseCostCalculator 
+                        <HouseCalculatorEmotional 
                           netSalary={netSalary}
                           budgetPercentage={budgetPercentage}
-                          onBackToHome={handleBackToHome}
                         />
+                      </LayoutWrapper>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/house" 
+                    element={
+                      <LayoutWrapper>
+                        <HouseCalculatorEmotional />
                       </LayoutWrapper>
                     } 
                   />
