@@ -15,7 +15,7 @@ import { db } from '../../lib/firebase';
 import BasicInformation from './components/BasicInformation';
 import MonthlyExpenses from './components/MonthlyExpenses';
 import LoanDetails from './components/LoanDetails';
-import ResultsEnhanced from './component</ResultsEnhanced>nhanced';
+import ResultsEnhanced from './components/ResultsEnhanced';
 import SavedCalculations from './components/SavedCalculations';
 import CalculateButton from './components/CalculateButton';
 import ReportButton from '../../components/shared/ReportButton';
@@ -31,37 +31,37 @@ const HouseCostCalculator = ({ onBack, initialNetSalary = '', initialBudgetPerce
   const { user } = useAuth(); // Only get user from auth context
   const { subscription } = useSubscription(); // Get subscription from subscription context
   const { toast } = useToast();
-  
+
   // Loading states
   const [isLoading, setIsLoading] = useState(false);
   const [isCalculating, setIsCalculating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
-  
+
   // Basic state
   const [netSalary, setNetSalary] = useState(initialNetSalary || location.state?.netSalary || '');
   const [budgetPercentage, setBudgetPercentage] = useState(
     initialBudgetPercentage || location.state?.budgetPercentage || 30
   );
-  
+
   // Expenses state
   const [expenses, setExpenses] = useState(DEFAULT_EXPENSES);
   const [newExpense, setNewExpense] = useState('');
   const [newExpenseAmount, setNewExpenseAmount] = useState('');
-  
+
   // Results state
   const [affordableHousePrice, setAffordableHousePrice] = useState(0);
   const [downPayment, setDownPayment] = useState(0);
   const [estimatedMonthlyRepayment, setEstimatedMonthlyRepayment] = useState(0);
   const [estimatedMonthlyExpenses, setEstimatedMonthlyExpenses] = useState(0);
-  
+
   // Loan details state
   const [downPaymentPercentage, setDownPaymentPercentage] = useState(10);
   const [term, setTerm] = useState(240);
   const [interestRate, setInterestRate] = useState(10);
   const [bondInitiationFee] = useState(7000);
   const [bondRegistrationRate] = useState(2);
-  
+
   // Premium feature states
   const [showPremiumDialog, setShowPremiumDialog] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
@@ -142,13 +142,13 @@ const HouseCostCalculator = ({ onBack, initialNetSalary = '', initialBudgetPerce
 
       setExpenses(prev => [
         ...prev,
-        { 
-          name: newExpense.trim(), 
-          amount: Number(newExpenseAmount), 
-          type: 'custom' 
+        {
+          name: newExpense.trim(),
+          amount: Number(newExpenseAmount),
+          type: 'custom'
         }
       ]);
-      
+
       setNewExpense('');
       setNewExpenseAmount('');
 
@@ -209,17 +209,17 @@ const HouseCostCalculator = ({ onBack, initialNetSalary = '', initialBudgetPerce
       }
 
       const monthlyBudget = parsedSalary * (budgetPercentage / 100);
-      
+
       const totalMonthlyExpenses = expenses.reduce((sum, expense) => {
         const amount = Number(expense.amount) || 0;
         if (amount < 0) throw new Error('Expense amounts cannot be negative');
         return sum + amount;
       }, 0);
-      
+
       setEstimatedMonthlyExpenses(totalMonthlyExpenses);
 
       const availableForRepayment = monthlyBudget - totalMonthlyExpenses;
-      
+
       if (availableForRepayment <= 0) {
         toast({
           title: "Budget Error",
@@ -232,8 +232,8 @@ const HouseCostCalculator = ({ onBack, initialNetSalary = '', initialBudgetPerce
       if (!validateLoanParameters()) return;
 
       const monthlyRate = interestRate / 12 / 100;
-      const loanAmount = availableForRepayment * 
-        (Math.pow(1 + monthlyRate, term) - 1) / 
+      const loanAmount = availableForRepayment *
+        (Math.pow(1 + monthlyRate, term) - 1) /
         (monthlyRate * Math.pow(1 + monthlyRate, term));
 
       const totalPrice = loanAmount / (1 - (downPaymentPercentage / 100));
@@ -303,7 +303,7 @@ const HouseCostCalculator = ({ onBack, initialNetSalary = '', initialBudgetPerce
   const handleGenerateReport = async () => {
     try {
       setIsGeneratingReport(true);
-      
+
       const logo = await fetch(NickleLogo)
         .then(res => res.blob())
         .then(blob => {
@@ -313,11 +313,11 @@ const HouseCostCalculator = ({ onBack, initialNetSalary = '', initialBudgetPerce
             reader.readAsDataURL(blob);
           });
         });
-  
+
       // Calculate transfer duty here to ensure it's a number
       const transferDuty = calculateTransferDuty(parseFloat(affordableHousePrice));
       const bondRegistrationCost = (affordableHousePrice - parseFloat(downPayment)) * (bondRegistrationRate / 100);
-  
+
       generateHouseReport({
         logoBase64: logo,
         netSalary: parseFloat(netSalary),
@@ -335,7 +335,7 @@ const HouseCostCalculator = ({ onBack, initialNetSalary = '', initialBudgetPerce
         transferDuty: transferDuty,
         bondRegistrationCost: bondRegistrationCost
       });
-  
+
       toast({
         title: "Success",
         description: "Report generated successfully",
@@ -395,7 +395,7 @@ const HouseCostCalculator = ({ onBack, initialNetSalary = '', initialBudgetPerce
       await addDoc(collection(db, 'calculations'), calculationData);
       await loadSavedCalculations();
       setShowSaveDialog(false);
-      
+
       toast({
         title: "Success",
         description: "Calculation saved successfully",
@@ -467,7 +467,7 @@ const HouseCostCalculator = ({ onBack, initialNetSalary = '', initialBudgetPerce
                 Saving...
               </>
             ) : (
-              user && (subscription?.status === 'active' || subscription?.status === 'trialing')
+              user && subscription?.status && ['active', 'trialing'].includes(subscription.status)
                 ? 'Save Calculation' 
                 : 'Upgrade to Save'
             )}

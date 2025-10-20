@@ -15,7 +15,7 @@ import { db } from '../../lib/firebase';
 import BasicInformation from './components/BasicInformation';
 import MonthlyExpenses from './components/MonthlyExpenses';
 import PurchaseDecisions from './components/PurchaseDecisions';
-import ResultsEnhanced from './components</ResultsEnhanced>hanced';
+import ResultsEnhanced from './components/ResultsEnhanced';
 import SavedCalculations from './components/SavedCalculations';
 import ReportButton from '../../components/shared/ReportButton';
 
