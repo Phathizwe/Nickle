@@ -3,7 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '../ui/card';
 import { Input } from '../ui/input';
 import { ModernSlider } from '../ui/modern-slider';
-import { Home as HomeIcon, Sparkles, AlertCircle, CheckCircle2, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
+import { Home as HomeIcon, Sparkles, AlertCircle, CheckCircle2, ArrowLeft, ChevronDown, ChevronUp, Download } from 'lucide-react';
+import { exportHouseCalculatorToPDF } from '../../utils/pdfExport';
 import { cn } from '../../lib/utils';
 import Meta from '../SEO/Meta';
 import { useAuth } from '../auth/AuthProvider';
@@ -126,9 +127,26 @@ const HouseCalculatorMobile = () => {
               <HomeIcon className="h-3 w-3 md:h-4 md:w-4" />
               Home Affordability Calculator
             </div>
-            <h1 className="text-2xl md:text-4xl font-bold text-gray-900 mb-2">
-              Find Your Dream Home Budget
-            </h1>
+            <div className="flex items-center justify-center gap-4 mb-2">
+              <h1 className="text-2xl md:text-4xl font-bold text-gray-900">
+                Find Your Dream Home Budget
+              </h1>
+              {user && results && results.affordableHousePrice > 0 && (
+                <Button
+                  onClick={() => exportHouseCalculatorToPDF(netSalary, results, {
+                    budgetPercentage,
+                    downPaymentPercentage,
+                    term,
+                    interestRate
+                  })}
+                  className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
+                  size="sm"
+                >
+                  <Download className="h-4 w-4" />
+                  PDF
+                </Button>
+              )}
+            </div>
             <p className="text-sm md:text-base text-gray-600">
               Adjust the controls and watch your budget update instantly
             </p>

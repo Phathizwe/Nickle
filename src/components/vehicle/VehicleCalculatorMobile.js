@@ -3,7 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '../ui/card';
 import { Input } from '../ui/input';
 import { ModernSlider } from '../ui/modern-slider';
-import { Car, Sparkles, AlertCircle, CheckCircle2, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
+import { Car, Sparkles, AlertCircle, CheckCircle2, ArrowLeft, ChevronDown, ChevronUp, Download } from 'lucide-react';
+import { exportCarCalculatorToPDF } from '../../utils/pdfExport';
 import { cn } from '../../lib/utils';
 import Meta from '../SEO/Meta';
 import { useAuth } from '../auth/AuthProvider';
@@ -108,9 +109,26 @@ const VehicleCalculatorMobile = () => {
               <Car className="h-3 w-3 md:h-4 md:w-4" />
               Car Affordability Calculator
             </div>
-            <h1 className="text-2xl md:text-4xl font-bold text-gray-900 mb-2">
-              Find Your Perfect Car Budget
-            </h1>
+            <div className="flex items-center justify-center gap-4 mb-2">
+              <h1 className="text-2xl md:text-4xl font-bold text-gray-900">
+                Find Your Perfect Car Budget
+              </h1>
+              {user && results && results.affordableCarPrice > 0 && (
+                <Button
+                  onClick={() => exportCarCalculatorToPDF(netSalary, results, {
+                    budgetPercentage,
+                    deposit,
+                    term,
+                    interestRate
+                  })}
+                  className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
+                  size="sm"
+                >
+                  <Download className="h-4 w-4" />
+                  PDF
+                </Button>
+              )}
+            </div>
             <p className="text-sm md:text-base text-gray-600">
               Adjust the controls and watch your budget update instantly
             </p>

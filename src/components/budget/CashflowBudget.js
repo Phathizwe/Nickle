@@ -7,8 +7,9 @@ import { Input } from '../ui/input';
 import { 
   TrendingUp, TrendingDown, DollarSign, Home as HomeIcon, 
   Car, ShoppingCart, Zap, Heart, Briefcase, PiggyBank,
-  Plus, Edit2, Save, X, Check
+  Plus, Edit2, Save, X, Check, Download
 } from 'lucide-react';
+import { exportCashflowToPDF } from '../../utils/pdfExport';
 import { cn } from '../../lib/utils';
 
 const CashflowBudget = () => {
@@ -119,12 +120,25 @@ const CashflowBudget = () => {
       <div className="max-w-4xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-            Your Cashflow Statement
-          </h1>
-          <p className="text-gray-600">
-            Track money in, money out, and what's left
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                Your Cashflow Statement
+              </h1>
+              <p className="text-gray-600">
+                Track money in, money out, and what's left
+              </p>
+            </div>
+            {user && (
+              <Button
+                onClick={() => exportCashflowToPDF(netSalary, carBudget, houseBudget, customExpenses, savings)}
+                className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
+              >
+                <Download className="h-4 w-4" />
+                Export PDF
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* INCOME Section */}
