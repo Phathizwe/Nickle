@@ -7,6 +7,7 @@ import HouseCostCalculator from './components/house/HouseCostCalculator';
 import HouseCalculatorEmotional from './components/house/HouseCalculatorEmotional';
 import VehicleCostCalculator from './components/vehicle/VehicleCostCalculator';
 import VehicleCalculatorEmotional from './components/vehicle/VehicleCalculatorEmotional';
+import VehicleCalculatorMobile from './components/vehicle/VehicleCalculatorMobile';
 import About from './components/pages/About';
 import Contact from './components/pages/Contact';
 import Privacy from './components/pages/Privacy';
@@ -166,7 +167,7 @@ function AppContent() {
                     path="/vehicle" 
                     element={
                       <LayoutWrapper>
-                        <VehicleCalculatorEmotional />
+                        <VehicleCalculatorMobile />
                       </LayoutWrapper>
                     } 
                   />
