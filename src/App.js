@@ -17,6 +17,7 @@ import { Toaster } from './components/ui/toaster';
 import { AuthProvider, useAuth } from './components/auth/AuthProvider';
 import { SubscriptionProvider } from './components/contexts/SubscriptionContext';
 import LayoutWrapper from './components/layouts/LayoutWrapper';
+import { HelmetProvider } from 'react-helmet-async';
 
 // Create a route that shows Start for non-authenticated users and redirects to Home for authenticated users
 const LandingRoute = () => {
@@ -167,16 +168,19 @@ function AppContent() {
 function App() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <SubscriptionProvider>
-          <Router>
-            <AppContent />
-          </Router>
-          <Toaster />
+      <HelmetProvider>
+        <AuthProvider>
+          <SubscriptionProvider>
+            <Router>
+              <AppContent />
+            </Router>
+            <Toaster />
         </SubscriptionProvider>
       </AuthProvider>
+      </HelmetProvider>
     </ErrorBoundary>
   );
 }
 
+// Add this line to export the App component as the default export
 export default App;
