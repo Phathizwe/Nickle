@@ -6,10 +6,12 @@ import { ModernSlider } from '../ui/modern-slider';
 import { Home as HomeIcon, Sparkles, AlertCircle, CheckCircle2, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import Meta from '../SEO/Meta';
+import { useAuth } from '../auth/AuthProvider';
 
 const HouseCalculatorMobile = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   
   const [netSalary, setNetSalary] = useState(() => {
     return location.state?.netSalary || localStorage.getItem('initialNetSalary') || '';
@@ -72,6 +74,13 @@ const HouseCalculatorMobile = () => {
   };
 
   const results = calculateResults();
+
+  // Save results to localStorage for budget overview
+  useEffect(() => {
+    if (results && results.affordableHousePrice > 0) {
+      localStorage.setItem('houseCalculation', JSON.stringify(results));
+    }
+  }, [results]);
 
   useEffect(() => {
     if (results && results.affordableHousePrice > 0) {
@@ -400,6 +409,33 @@ const HouseCalculatorMobile = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Sign-up CTA */}
+          {!user && results && results.affordableHousePrice > 0 && (
+            <Card className="mt-6 bg-gradient-to-r from-purple-100 to-blue-100 border-2 border-purple-200">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-white rounded-lg">
+                    <Sparkles className="h-6 w-6 text-purple-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-gray-900 mb-2">
+                      💾 Save This Calculation
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Sign up to save your house budget, see it alongside your car budget, and access a beautiful dashboard that shows all your financial commitments in one place.
+                    </p>
+                    <button
+                      onClick={() => navigate('/pricing')}
+                      className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
+                    >
+                      Sign Up - It's Free
+                    </button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {(!results || results.affordableHousePrice <= 0) && (
             <Card className="mt-6 border-2 border-gray-200">
