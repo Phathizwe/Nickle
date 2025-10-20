@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import HomePage from './components/home/HomePage';
 import HouseCostCalculator from './components/house/HouseCostCalculator';
 import HouseCalculatorEmotional from './components/house/HouseCalculatorEmotional';
+import HouseCalculatorMobile from './components/house/HouseCalculatorMobile';
 import VehicleCostCalculator from './components/vehicle/VehicleCostCalculator';
 import VehicleCalculatorEmotional from './components/vehicle/VehicleCalculatorEmotional';
 import VehicleCalculatorMobile from './components/vehicle/VehicleCalculatorMobile';
@@ -146,7 +147,7 @@ function AppContent() {
                     path="/house" 
                     element={
                       <LayoutWrapper>
-                        <HouseCalculatorEmotional />
+                        <HouseCalculatorMobile />
                       </LayoutWrapper>
                     } 
                   />
