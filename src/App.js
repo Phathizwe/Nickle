@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import HomePage from './components/home/HomePage';
 import HouseCostCalculator from './components/house/HouseCostCalculator';
 import VehicleCostCalculator from './components/vehicle/VehicleCostCalculator';
+import VehicleCalculatorEmotional from './components/vehicle/VehicleCalculatorEmotional';
 import About from './components/pages/About';
 import Contact from './components/pages/Contact';
 import Privacy from './components/pages/Privacy';
@@ -144,11 +145,19 @@ function AppContent() {
                     path="/vehicle-calculator" 
                     element={
                       <LayoutWrapper>
-                        <VehicleCostCalculator 
+                        <VehicleCalculatorEmotional 
                           netSalary={netSalary}
                         budgetPercentage={budgetPercentage}
-                        onBackToHome={handleBackToHome}
                       />
+                      </LayoutWrapper>
+                    } 
+                  />
+                  
+                  <Route 
+                    path="/vehicle" 
+                    element={
+                      <LayoutWrapper>
+                        <VehicleCalculatorEmotional />
                       </LayoutWrapper>
                     } 
                   />
