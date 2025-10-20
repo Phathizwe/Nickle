@@ -11,6 +11,7 @@ import Privacy from './components/pages/Privacy';
 import Terms from './components/pages/Terms';
 import Pricing from './components/pages/Pricing';
 import Start from './components/pages/Start';
+import HomePageEmotional from './components/home/HomePageEmotional';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { Toaster } from './components/ui/toaster';
@@ -28,8 +29,8 @@ const LandingRoute = () => {
     return <Navigate to="/home" replace />;
   }
   
-  // User is not signed in, show Start page
-  return <Start />;
+  // User is not signed in, show new emotional homepage
+  return <HomePageEmotional />;
   };
 
 function AppContent() {
