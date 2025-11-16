@@ -186,7 +186,7 @@ const CashflowBudget = () => {
             </div>
             {user && (
               <Button
-                onClick={() => exportCashflowToPDF(netSalary, carBudget, houseBudget, customExpenses, savings)}
+                onClick={() => exportCashflowToPDF(netSalary, carBudget, houseBudget, customExpenses, savings, budgetMode, currentHousingCost, currentTransportCost)}
                 className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
               >
                 <Download className="h-4 w-4" />

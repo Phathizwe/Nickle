@@ -9,7 +9,7 @@ const formatCurrency = (value) => {
   return 'R ' + Math.round(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 };
 
-export const exportCashflowToPDF = (netSalary, carBudget, houseBudget, customExpenses, savings) => {
+export const exportCashflowToPDF = (netSalary, carBudget, houseBudget, customExpenses, savings, budgetMode = 'after', currentHousingCost = 0, currentTransportCost = 0) => {
   const doc = new jsPDF();
   
   // Logo
@@ -22,7 +22,8 @@ export const exportCashflowToPDF = (netSalary, carBudget, houseBudget, customExp
   // Header
   doc.setFontSize(20);
   doc.setTextColor(40, 40, 40);
-  doc.text('Cashflow Statement', 105, 20, { align: 'center' });
+  const modeText = budgetMode === 'after' ? 'AFTER Purchase' : 'BEFORE - Savings Plan';
+  doc.text(`Cashflow Statement (${modeText})`, 105, 20, { align: 'center' });
   
   doc.setFontSize(10);
   doc.setTextColor(100, 100, 100);
@@ -63,21 +64,32 @@ export const exportCashflowToPDF = (netSalary, carBudget, houseBudget, customExp
   yPos += 5;
   const expenseRows = [];
   
-  // House breakdown
-  if (houseBudget && houseBudget.breakdown) {
-    expenseRows.push(['House', '']);
-    expenseRows.push(['  Bond Repayment', formatCurrency(houseBudget.breakdown.bondRepayment)]);
-    expenseRows.push(['  Rates & Taxes', formatCurrency(houseBudget.breakdown.rates)]);
-    expenseRows.push(['  Home Insurance', formatCurrency(houseBudget.breakdown.insurance)]);
-    expenseRows.push(['  Maintenance', formatCurrency(houseBudget.breakdown.maintenance)]);
-  }
-  
-  // Car breakdown
-  if (carBudget && carBudget.breakdown) {
-    expenseRows.push(['Car', '']);
-    expenseRows.push(['  Monthly Repayment', formatCurrency(carBudget.breakdown.repayment)]);
-    expenseRows.push(['  Insurance', formatCurrency(carBudget.breakdown.insurance)]);
-    expenseRows.push(['  Petrol', formatCurrency(carBudget.breakdown.petrol)]);
+  if (budgetMode === 'after') {
+    // AFTER mode: Show dream house and car expenses with breakdown
+    // House breakdown
+    if (houseBudget && houseBudget.breakdown) {
+      expenseRows.push(['House', '']);
+      expenseRows.push(['  Bond Repayment', formatCurrency(houseBudget.breakdown.bondRepayment)]);
+      expenseRows.push(['  Rates & Taxes', formatCurrency(houseBudget.breakdown.rates)]);
+      expenseRows.push(['  Home Insurance', formatCurrency(houseBudget.breakdown.insurance)]);
+      expenseRows.push(['  Maintenance', formatCurrency(houseBudget.breakdown.maintenance)]);
+    }
+    
+    // Car breakdown
+    if (carBudget && carBudget.breakdown) {
+      expenseRows.push(['Car', '']);
+      expenseRows.push(['  Monthly Repayment', formatCurrency(carBudget.breakdown.repayment)]);
+      expenseRows.push(['  Insurance', formatCurrency(carBudget.breakdown.insurance)]);
+      expenseRows.push(['  Petrol', formatCurrency(carBudget.breakdown.petrol)]);
+    }
+  } else {
+    // BEFORE mode: Show current costs only
+    if (currentHousingCost > 0) {
+      expenseRows.push(['Current Housing Costs', formatCurrency(currentHousingCost)]);
+    }
+    if (currentTransportCost > 0) {
+      expenseRows.push(['Current Transport Costs', formatCurrency(currentTransportCost)]);
+    }
   }
   
   // Custom expenses
@@ -96,10 +108,12 @@ export const exportCashflowToPDF = (netSalary, carBudget, houseBudget, customExp
     margin: { left: 20, right: 20 },
   });
   
-  const totalExpenses = 
-    (houseBudget ? houseBudget.totalMonthlyCost : 0) +
-    (carBudget ? carBudget.totalMonthlyCost : 0) +
-    customExpenses.reduce((sum, exp) => sum + (exp.amount || 0), 0);
+  const totalExpenses = budgetMode === 'after'
+    ? (houseBudget ? houseBudget.totalMonthlyCost : 0) +
+      (carBudget ? carBudget.totalMonthlyCost : 0) +
+      customExpenses.reduce((sum, exp) => sum + (exp.amount || 0), 0)
+    : currentHousingCost + currentTransportCost +
+      customExpenses.reduce((sum, exp) => sum + (exp.amount || 0), 0);
   
   yPos = doc.lastAutoTable.finalY + 2;
   doc.setFontSize(12);
@@ -118,6 +132,23 @@ export const exportCashflowToPDF = (netSalary, carBudget, houseBudget, customExp
     .filter(sav => sav.amount > 0)
     .map(sav => [sav.name, formatCurrency(sav.amount)]);
   
+  // Add dream savings in BEFORE mode
+  if (budgetMode === 'before') {
+    const carSavingsGoalGross = carBudget ? netSalary * 0.30 : 0;
+    const houseSavingsGoalGross = houseBudget ? netSalary * 0.30 : 0;
+    const carSavingsGoal = Math.max(0, carSavingsGoalGross - currentTransportCost);
+    const houseSavingsGoal = Math.max(0, houseSavingsGoalGross - currentHousingCost);
+    
+    if (houseSavingsGoal > 0) {
+      savingsRows.push(['Dream House Savings', formatCurrency(houseSavingsGoal)]);
+      savingsRows.push(['  (30% budget - current housing)', '']);
+    }
+    if (carSavingsGoal > 0) {
+      savingsRows.push(['Dream Car Savings', formatCurrency(carSavingsGoal)]);
+      savingsRows.push(['  (30% budget - current transport)', '']);
+    }
+  }
+  
   if (savingsRows.length > 0) {
     doc.autoTable({
       startY: yPos,
@@ -131,7 +162,12 @@ export const exportCashflowToPDF = (netSalary, carBudget, houseBudget, customExp
     yPos = doc.lastAutoTable.finalY + 2;
   }
   
-  const totalSavings = savings.reduce((sum, sav) => sum + (sav.amount || 0), 0);
+  const regularSavings = savings.reduce((sum, sav) => sum + (sav.amount || 0), 0);
+  const carSavingsGoalGross = (budgetMode === 'before' && carBudget) ? netSalary * 0.30 : 0;
+  const houseSavingsGoalGross = (budgetMode === 'before' && houseBudget) ? netSalary * 0.30 : 0;
+  const carSavingsGoal = Math.max(0, carSavingsGoalGross - currentTransportCost);
+  const houseSavingsGoal = Math.max(0, houseSavingsGoalGross - currentHousingCost);
+  const totalSavings = regularSavings + carSavingsGoal + houseSavingsGoal;
   doc.setFontSize(12);
   doc.setTextColor(147, 51, 234);
   doc.text(`Total Savings: ${formatCurrency(totalSavings)}`, 150, yPos, { align: 'right' });
