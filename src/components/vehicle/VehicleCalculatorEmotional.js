@@ -358,7 +358,7 @@ const VehicleCalculatorEmotional = () => {
                         onClick={() => exportCarCalculatorToPDF(
                           netSalary,
                           results,
-                          { budgetPercentage, interestRate, loanTerm, deposit, insuranceCost, petrolCost }
+                          { budgetPercentage, interestRate, loanTerm: term, deposit, insuranceCost: insurance, petrolCost: petrol }
                         )}
                         className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2"
                       >
