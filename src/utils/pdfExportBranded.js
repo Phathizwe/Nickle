@@ -60,7 +60,7 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
   // Title
   doc.setFontSize(20);
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(...COLORS.darkGray);
+  doc.setTextColor(...COLORS.black);
   const modeText = budgetMode === 'after' ? 'AFTER Purchase' : 'BEFORE - Savings Plan';
   doc.text('Your Financial Snapshot', 105, 20, { align: 'center' });
   
@@ -263,7 +263,7 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
     
     doc.setFontSize(13);
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(...COLORS.darkGray);
+    doc.setTextColor(...COLORS.black);
     doc.text('Your Savings Plan', 105, yPos, { align: 'center' });
     
     yPos += 8;
@@ -281,7 +281,7 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(...COLORS.blue);
       doc.text('Dream Car Savings', 25, yPos);
-      doc.setTextColor(...COLORS.darkGray);
+      doc.setTextColor(...COLORS.black);
       doc.text(formatCurrency(carSavingsGoal) + '/month', 185, yPos, { align: 'right' });
       
       yPos += 5;
@@ -302,7 +302,7 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(...COLORS.green);
       doc.text('Dream House Savings', 25, yPos);
-      doc.setTextColor(...COLORS.darkGray);
+      doc.setTextColor(...COLORS.black);
       doc.text(formatCurrency(houseSavingsGoal) + '/month', 185, yPos, { align: 'right' });
       
       yPos += 5;
@@ -352,7 +352,7 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
     
     doc.setFontSize(20);
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(...COLORS.darkGray);
+    doc.setTextColor(...COLORS.black);
     doc.text('Your Journey to Financial Freedom', 105, 20, { align: 'center' });
     
     doc.setFontSize(10);
@@ -376,7 +376,7 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
     
     doc.setFontSize(15);
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(...COLORS.darkGray);
+    doc.setTextColor(...COLORS.black);
     doc.text('Savings Milestones', 105, yPos, { align: 'center' });
     
     yPos = 90;
@@ -455,7 +455,7 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
     yPos = 140;
     doc.setFontSize(13);
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(...COLORS.darkGray);
+    doc.setTextColor(...COLORS.black);
     doc.text('Monthly Savings Breakdown', 105, yPos, { align: 'center' });
     
     yPos += 15;
@@ -466,7 +466,7 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(...COLORS.blue);
       doc.text('Dream Car Savings', 25, yPos);
-      doc.setTextColor(...COLORS.darkGray);
+      doc.setTextColor(...COLORS.black);
       doc.text(formatCurrency(carSavingsGoal), 185, yPos, { align: 'right' });
       
       yPos += 5;
@@ -487,7 +487,7 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(...COLORS.green);
       doc.text('Dream House Savings', 25, yPos);
-      doc.setTextColor(...COLORS.darkGray);
+      doc.setTextColor(...COLORS.black);
       doc.text(formatCurrency(houseSavingsGoal), 185, yPos, { align: 'right' });
       
       yPos += 5;
