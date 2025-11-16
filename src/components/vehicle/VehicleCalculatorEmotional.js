@@ -9,7 +9,7 @@ import { Car, Sparkles, TrendingUp, AlertCircle, CheckCircle2, ArrowLeft, Downlo
 import { cn } from '../../lib/utils';
 import Meta from '../SEO/Meta';
 import DualGoalModal from '../modals/DualGoalModal';
-import { exportCarCalculatorToPDF } from '../../utils/pdfExportBranded';
+import { exportCarCalculatorToPDF } from '../../utils/pdfExportCalculators';
 
 const VehicleCalculatorEmotional = () => {
   const location = useLocation();

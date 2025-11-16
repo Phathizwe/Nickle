@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { ModernSlider } from '../ui/modern-slider';
 import { Car, Sparkles, AlertCircle, CheckCircle2, ArrowLeft, ChevronDown, ChevronUp, Download } from 'lucide-react';
-import { exportCarCalculatorToPDF } from '../../utils/pdfExportBranded';
+import { exportCarCalculatorToPDF } from '../../utils/pdfExportCalculators';
 import { cn } from '../../lib/utils';
 import Meta from '../SEO/Meta';
 import { useAuth } from '../auth/AuthProvider';

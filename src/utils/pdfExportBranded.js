@@ -2,10 +2,10 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
 // Optimized Nickle logo for PDF use (200x200px)
-const NICKLE_LOGO = 'undefined';
+export const NICKLE_LOGO = 'undefined';
 
 // Nickle Brand Colors (actual CI)
-const COLORS = {
+export const COLORS = {
   darkGreen: [10, 51, 35],      // #0A3323 - Primary brand color
   turquoise: [44, 207, 181],    // #2CCFB45 - Secondary accent
   mint: [62, 207, 248],         // #3ECF8 - Light accent  
@@ -19,33 +19,34 @@ const COLORS = {
   blue: [59, 130, 246],         // #3B82F6 - Blue for car
 };
 
-const formatCurrency = (value) => {
+export const formatCurrency = (value) => {
   if (!value && value !== 0) return 'R 0';
   return 'R ' + Math.round(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 };
 
 // Helper function to draw a rounded rectangle
-const drawRoundedRect = (doc, x, y, width, height, fillColor) => {
+export const drawRoundedRect = (doc, x, y, width, height, fillColor) => {
   doc.setFillColor(...fillColor);
   doc.roundedRect(x, y, width, height, 2, 2, 'F');
 };
 
 // Helper function to draw a circle
-const drawCircle = (doc, x, y, radius, fillColor) => {
+export const drawCircle = (doc, x, y, radius, fillColor) => {
   doc.setFillColor(...fillColor);
   doc.circle(x, y, radius, 'F');
 };
 
 // Helper function to draw branded header
-const drawBrandedHeader = (doc, title) => {
+export const drawBrandedHeader = (doc, title) => {
   // Header background
   drawRoundedRect(doc, 10, 10, 190, 30, COLORS.lightGray);
   
-  // Nickle branding
-  doc.setFontSize(24);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(...COLORS.darkGreen);
-  doc.text('N', 20, 28);
+  // Nickle logo
+  try {
+    doc.addImage(NICKLE_LOGO, 'PNG', 15, 13, 20, 20);
+  } catch (e) {
+    console.log('Logo not added:', e);
+  }
   
   doc.setFontSize(18);
   doc.setFont('helvetica', 'bold');
@@ -70,7 +71,7 @@ const drawBrandedHeader = (doc, title) => {
 };
 
 // Helper function to draw footer
-const drawFooter = (doc) => {
+export const drawFooter = (doc) => {
   doc.setFontSize(8);
   doc.setTextColor(...COLORS.gray);
   doc.text('Smart Budgets Meet Big Ambitions', 105, 280, { align: 'center' });
