@@ -37,11 +37,50 @@ const HomePageEmotional = () => {
     const salary = parseFloat(netSalary);
     if (!salary) return null;
 
+    // House calculation using proper loan amortization (matching detailed calculator)
+    const houseBudgetPercentage = 30;
+    const houseMonthlyBudget = salary * (houseBudgetPercentage / 100);
+    
+    // Default expenses (matching calculator defaults)
+    const defaultRates = 1500;
+    const defaultInsurance = 800;
+    const defaultMaintenance = 1000;
+    const houseMonthlyExpenses = defaultRates + defaultInsurance + defaultMaintenance;
+    const houseAvailableForRepayment = houseMonthlyBudget - houseMonthlyExpenses;
+    
+    // Loan calculation with proper amortization
+    const houseInterestRate = 11.5;
+    const houseLoanTerm = 20 * 12; // 20 years in months
+    const houseMonthlyRate = houseInterestRate / 12 / 100;
+    const houseLoanAmount = houseAvailableForRepayment > 0 ? 
+      houseAvailableForRepayment * ((Math.pow(1 + houseMonthlyRate, houseLoanTerm) - 1) / (houseMonthlyRate * Math.pow(1 + houseMonthlyRate, houseLoanTerm))) : 0;
+    const houseDownPaymentPercentage = 10;
+    const houseTotalPrice = houseLoanAmount / (1 - (houseDownPaymentPercentage / 100));
+
+    // Car calculation using proper loan amortization (matching detailed calculator)
+    const carBudgetPercentage = 30;
+    const carMonthlyBudget = salary * (carBudgetPercentage / 100);
+    
+    // Default expenses (matching calculator defaults)
+    const defaultCarInsurance = 1500;
+    const defaultPetrol = 2000;
+    const carMonthlyExpenses = defaultCarInsurance + defaultPetrol;
+    const carAvailableForRepayment = carMonthlyBudget - carMonthlyExpenses;
+    
+    // Loan calculation with proper amortization
+    const carInterestRate = 11.5;
+    const carLoanTerm = 5 * 12; // 5 years in months
+    const carMonthlyRate = carInterestRate / 12 / 100;
+    const carLoanAmount = carAvailableForRepayment > 0 ?
+      carAvailableForRepayment * ((Math.pow(1 + carMonthlyRate, carLoanTerm) - 1) / (carMonthlyRate * Math.pow(1 + carMonthlyRate, carLoanTerm))) : 0;
+    const carDeposit = 0; // Default no deposit
+    const carTotalPrice = carLoanAmount + carDeposit;
+
     return {
-      carBudget: Math.round(salary * 0.2 * 60 / 1.1), // 20% of salary, approximate
-      houseBudget: Math.round(salary * 0.3 * 240 / 1.1),
-      monthlyCarBudget: Math.round(salary * 0.3), // 30% for total vehicle costs
-      monthlyHouseBudget: Math.round(salary * 0.3)
+      carBudget: Math.round(carTotalPrice),
+      houseBudget: Math.round(houseTotalPrice),
+      monthlyCarBudget: Math.round(carMonthlyBudget),
+      monthlyHouseBudget: Math.round(houseMonthlyBudget)
     };
   };
 
