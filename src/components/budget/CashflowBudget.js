@@ -53,6 +53,11 @@ const CashflowBudget = () => {
 
   const [editingExpense, setEditingExpense] = useState(null);
   const [editingValue, setEditingValue] = useState('');
+  
+  // Budget mode: 'after' (with car/house) or 'before' (saving for deposits)
+  const [budgetMode, setBudgetMode] = useState(() => {
+    return localStorage.getItem('budgetMode') || 'after';
+  });
 
   useEffect(() => {
     localStorage.setItem('customExpenses', JSON.stringify(customExpenses));
@@ -68,6 +73,10 @@ const CashflowBudget = () => {
     }
   }, [netSalary]);
 
+  useEffect(() => {
+    localStorage.setItem('budgetMode', budgetMode);
+  }, [budgetMode]);
+
   const formatCurrency = (value) => {
     if (!value && value !== 0) return 'R 0';
     return 'R ' + Math.round(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
@@ -76,12 +85,24 @@ const CashflowBudget = () => {
   // Calculate totals
   const totalIncome = netSalary;
   
-  const carExpenses = carBudget ? carBudget.totalMonthlyCost : 0;
-  const houseExpenses = houseBudget ? houseBudget.totalMonthlyCost : 0;
+  // AFTER mode: Show monthly payments for car and house
+  // BEFORE mode: Show savings goals for deposits
+  const carExpenses = (budgetMode === 'after' && carBudget) ? carBudget.totalMonthlyCost : 0;
+  const houseExpenses = (budgetMode === 'after' && houseBudget) ? houseBudget.totalMonthlyCost : 0;
   const customExpensesTotal = customExpenses.reduce((sum, exp) => sum + (exp.amount || 0), 0);
   const totalExpenses = carExpenses + houseExpenses + customExpensesTotal;
   
-  const totalSavings = savings.reduce((sum, sav) => sum + (sav.amount || 0), 0);
+  // Calculate savings for BEFORE mode
+  const carSavingsGoal = (budgetMode === 'before' && carBudget) ? netSalary * 0.30 : 0;
+  const houseSavingsGoal = (budgetMode === 'before' && houseBudget) ? netSalary * 0.30 : 0;
+  const regularSavings = savings.reduce((sum, sav) => sum + (sav.amount || 0), 0);
+  const totalSavings = regularSavings + carSavingsGoal + houseSavingsGoal;
+  
+  // Calculate deposit requirements
+  const carDeposit = carBudget ? (carBudget.affordableCarPrice * 0.20) : 0; // 20% deposit
+  const houseDeposit = houseBudget ? (houseBudget.affordableHomePrice * 0.10) : 0; // 10% deposit
+  const carUpfrontCosts = carBudget ? carDeposit : 0;
+  const houseUpfrontCosts = houseBudget ? (houseDeposit + (houseBudget.transferDuty || 0) + (houseBudget.bondCosts || 0)) : 0;
   
   const netCashflow = totalIncome - totalExpenses - totalSavings;
 
@@ -129,10 +150,17 @@ const CashflowBudget = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                Your Cashflow Statement
+                {budgetMode === 'after' ? (
+                  <>Your Budget <span className="text-green-600">After</span> Buying Your Dream Car & House</>
+                ) : (
+                  <>Your Budget <span className="text-purple-600">Before</span> - Saving for Your Dreams</>
+                )}
               </h1>
               <p className="text-gray-600">
-                Track money in, money out, and what's left
+                {budgetMode === 'after' 
+                  ? 'Life with your dream car and house - monthly payments included'
+                  : 'Save for deposits and upfront costs to make your dreams a reality'
+                }
               </p>
             </div>
             {user && (
@@ -146,6 +174,42 @@ const CashflowBudget = () => {
             )}
           </div>
         </div>
+
+        {/* Mode Toggle Button */}
+        {(carBudget || houseBudget) && (
+          <Card className="mb-6 bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-bold text-lg text-gray-900 mb-1">
+                    {budgetMode === 'after' 
+                      ? "Haven't bought your dream car or house yet?"
+                      : "Want to see life after you've achieved your goals?"
+                    }
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {budgetMode === 'after'
+                      ? 'Switch to savings mode to see how to save for deposits and upfront costs'
+                      : 'Switch to see your budget once you own your dream car and house'
+                    }
+                  </p>
+                </div>
+                <Button
+                  onClick={() => setBudgetMode(budgetMode === 'after' ? 'before' : 'after')}
+                  className={cn(
+                    "ml-4",
+                    budgetMode === 'after' 
+                      ? "bg-purple-600 hover:bg-purple-700" 
+                      : "bg-green-600 hover:bg-green-700"
+                  )}
+                  size="lg"
+                >
+                  {budgetMode === 'after' ? '💰 Show Me How to Save' : '🎯 Show Life After Purchase'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* INCOME Section */}
         <Card className="mb-6 border-2 border-green-200 shadow-lg">
@@ -415,6 +479,61 @@ const CashflowBudget = () => {
             </div>
 
             <div className="space-y-2">
+              {/* Car Savings Goal - BEFORE mode only */}
+              {budgetMode === 'before' && carBudget && (
+                <div className="py-3 px-4 bg-blue-100 border-2 border-blue-300 rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Car className="h-5 w-5 text-blue-600" />
+                      <span className="font-bold text-gray-900">Car Savings Goal</span>
+                    </div>
+                    <span className="text-xl font-bold text-blue-600">{formatCurrency(carSavingsGoal)}</span>
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    <div className="flex justify-between mb-1">
+                      <span>Target: {formatCurrency(carUpfrontCosts)} (20% deposit)</span>
+                      <span className="font-semibold">
+                        {carSavingsGoal > 0 ? Math.ceil(carUpfrontCosts / carSavingsGoal) : 0} months to save
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                      <div 
+                        className="bg-blue-600 h-2 rounded-full" 
+                        style={{ width: '0%' }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* House Savings Goal - BEFORE mode only */}
+              {budgetMode === 'before' && houseBudget && (
+                <div className="py-3 px-4 bg-green-100 border-2 border-green-300 rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <HomeIcon className="h-5 w-5 text-green-600" />
+                      <span className="font-bold text-gray-900">House Savings Goal</span>
+                    </div>
+                    <span className="text-xl font-bold text-green-600">{formatCurrency(houseSavingsGoal)}</span>
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    <div className="flex justify-between mb-1">
+                      <span>Target: {formatCurrency(houseUpfrontCosts)} (deposit + costs)</span>
+                      <span className="font-semibold">
+                        {houseSavingsGoal > 0 ? Math.ceil(houseUpfrontCosts / houseSavingsGoal) : 0} months to save
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                      <div 
+                        className="bg-green-600 h-2 rounded-full" 
+                        style={{ width: '0%' }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Regular Savings */}
               {savings.map((saving) => (
                 <div key={saving.id} className="flex items-center justify-between py-3 px-3 bg-purple-50 rounded-lg">
                   <span className="text-gray-700">{saving.name}</span>
