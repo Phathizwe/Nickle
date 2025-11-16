@@ -30,7 +30,7 @@ const HomePageEmotional = () => {
 
   const formatCurrency = (value) => {
     if (!value) return '';
-    return 'R ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    return 'R ' + Math.round(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   };
 
   const calculateQuickEstimates = () => {
