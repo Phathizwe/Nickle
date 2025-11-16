@@ -123,7 +123,7 @@ const CashflowBudget = () => {
   const carDeposit = carBudget ? (carBudget.affordableCarPrice * 0.20) : 0; // 20% deposit
   const houseDeposit = houseBudget ? (houseBudget.affordableHomePrice * 0.10) : 0; // 10% deposit
   const carUpfrontCosts = carBudget ? carDeposit : 0;
-  const houseUpfrontCosts = houseBudget ? (houseDeposit + (houseBudget.transferDuty || 0) + (houseBudget.bondCosts || 0)) : 0;
+  const houseUpfrontCosts = houseBudget ? (houseBudget.totalUpfront || houseDeposit) : 0;
   
   const netCashflow = totalIncome - totalExpenses - totalSavings;
 

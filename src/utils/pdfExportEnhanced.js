@@ -273,7 +273,7 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
     // Calculate timeline data
     const carDeposit = carBudget ? (carBudget.affordableCarPrice * 0.20) : 0;
     const houseDeposit = houseBudget ? (houseBudget.affordableHomePrice * 0.10) : 0;
-    const houseUpfrontCosts = houseBudget ? (houseDeposit + (houseBudget.transferDuty || 0) + (houseBudget.bondCosts || 0)) : 0;
+    const houseUpfrontCosts = houseBudget ? (houseBudget.totalUpfront || houseDeposit) : 0;
     
     const monthsToSaveCar = carSavingsGoal > 0 ? Math.ceil(carDeposit / carSavingsGoal) : 0;
     const monthsToSaveHouse = houseSavingsGoal > 0 ? Math.ceil(houseUpfrontCosts / houseSavingsGoal) : 0;
@@ -360,7 +360,7 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
     // Calculate timeline data
     const carDeposit = carBudget ? (carBudget.affordableCarPrice * 0.20) : 0;
     const houseDeposit = houseBudget ? (houseBudget.affordableHomePrice * 0.10) : 0;
-    const houseUpfrontCosts = houseBudget ? (houseDeposit + (houseBudget.transferDuty || 0) + (houseBudget.bondCosts || 0)) : 0;
+    const houseUpfrontCosts = houseBudget ? (houseBudget.totalUpfront || houseDeposit) : 0;
     
     const monthsToSaveCar = carSavingsGoal > 0 ? Math.ceil(carDeposit / carSavingsGoal) : 0;
     const monthsToSaveHouse = houseSavingsGoal > 0 ? Math.ceil(houseUpfrontCosts / houseSavingsGoal) : 0;
