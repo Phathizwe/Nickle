@@ -90,21 +90,26 @@ const HouseCalculatorEmotional = () => {
 
   // Check if user has used both calculators and show modal
   useEffect(() => {
-    if (!user && results && results.affordableHousePrice > 0) {
-      // Mark that house calculator was used
-      localStorage.setItem('usedHouseCalculator', 'true');
-      localStorage.setItem('lastHouseBudget', results.affordableHousePrice);
+    if (results && results.affordableHousePrice > 0) {
+      // Save full calculation for homepage
+      localStorage.setItem('houseCalculation', JSON.stringify(results));
       
-      // Check if both calculators have been used
-      const usedVehicle = localStorage.getItem('usedVehicleCalculator');
-      const modalShown = sessionStorage.getItem('dualGoalModalShown');
-      
-      if (usedVehicle && !modalShown) {
-        // Small delay to let the results settle
-        setTimeout(() => {
-          setShowDualGoalModal(true);
-          sessionStorage.setItem('dualGoalModalShown', 'true');
-        }, 2000);
+      if (!user) {
+        // Mark that house calculator was used (for non-logged-in users)
+        localStorage.setItem('usedHouseCalculator', 'true');
+        localStorage.setItem('lastHouseBudget', results.affordableHousePrice);
+        
+        // Check if both calculators have been used
+        const usedVehicle = localStorage.getItem('usedVehicleCalculator');
+        const modalShown = sessionStorage.getItem('dualGoalModalShown');
+        
+        if (usedVehicle && !modalShown) {
+          // Small delay to let the results settle
+          setTimeout(() => {
+            setShowDualGoalModal(true);
+            sessionStorage.setItem('dualGoalModalShown', 'true');
+          }, 2000);
+        }
       }
     }
   }, [results, user]);
