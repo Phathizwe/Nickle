@@ -2,7 +2,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
 // Optimized Nickle logo for PDF use (200x200px)
-export const NICKLE_LOGO = 'undefined';
+export const NICKLE_LOGO = 'data:image/png;base64,undefined';
 
 // Nickle Brand Colors (actual CI)
 export const COLORS = {
