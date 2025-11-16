@@ -185,21 +185,40 @@ const HomePageEmotional = () => {
                   )}
                 </button>
 
-                {showTimeline && (
+                {showTimeline && (() => {
+                  // Calculate realistic savings goals
+                  const carDeposit = estimates.carBudget * 0.2; // 20% deposit for car
+                  const houseDeposit = estimates.houseBudget * 0.1; // 10% deposit for house
+                  const monthlySavings = 3000;
+                  
+                  // Calculate months needed
+                  const carMonths = Math.ceil(carDeposit / monthlySavings);
+                  const houseMonths = Math.ceil(houseDeposit / monthlySavings);
+                  
+                  // Format time display
+                  const formatTime = (months) => {
+                    if (months > 36) {
+                      const years = (months / 12).toFixed(1);
+                      return `~${years} years`;
+                    }
+                    return `~${months} months`;
+                  };
+                  
+                  return (
                   <div className="px-6 pb-6 pt-2 border-t border-gray-100 animate-in slide-in-from-top duration-300">
                     <p className="text-gray-700 mb-4">
                       Based on your <span className="font-semibold">{formatCurrency(parseFloat(netSalary))}</span> salary, 
-                      if you save <span className="font-semibold">R 3,000/month</span>:
+                      if you save <span className="font-semibold">R {monthlySavings.toLocaleString()}/month</span>:
                     </p>
                     <div className="space-y-3 mb-5">
                       <div className="flex items-start gap-3 bg-blue-50 p-4 rounded-lg">
                         <Car className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
                         <div>
                           <div className="font-semibold text-gray-900">
-                            Car ({formatCurrency(estimates.carBudget)})
+                            Car deposit (20%): {formatCurrency(carDeposit)}
                           </div>
                           <div className="text-sm text-gray-600">
-                            Approximately <span className="font-semibold text-blue-600">~{Math.ceil(estimates.carBudget / 3000)} months</span> of saving
+                            Approximately <span className="font-semibold text-blue-600">{formatTime(carMonths)}</span> of saving
                           </div>
                         </div>
                       </div>
@@ -207,10 +226,10 @@ const HomePageEmotional = () => {
                         <HomeIcon className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
                         <div>
                           <div className="font-semibold text-gray-900">
-                            House deposit ({formatCurrency(estimates.houseBudget * 0.1)})
+                            House deposit (10%): {formatCurrency(houseDeposit)}
                           </div>
                           <div className="text-sm text-gray-600">
-                            Approximately <span className="font-semibold text-green-600">~{Math.ceil((estimates.houseBudget * 0.1) / 3000)} months</span> of saving
+                            Approximately <span className="font-semibold text-green-600">{formatTime(houseMonths)}</span> of saving
                           </div>
                         </div>
                       </div>
@@ -225,7 +244,8 @@ const HomePageEmotional = () => {
                       Get a personalized budget with exact timelines for both goals
                     </p>
                   </div>
-                )}
+                  );
+                })()}
               </CardContent>
             </Card>
           )}
