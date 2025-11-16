@@ -169,6 +169,63 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
       doc.text(formatCurrency(currentTransportCost), rightCardX + cardWidth - 3, yPos, { align: 'right' });
       yPos += 5;
     }
+  } else if (budgetMode === 'after') {
+    // Show house breakdown in AFTER mode
+    if (houseBudget && houseBudget.breakdown) {
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...COLORS.darkGreen);
+      doc.text('House', rightCardX + 3, yPos);
+      yPos += 5;
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(...COLORS.gray);
+      if (houseBudget.breakdown.bondRepayment) {
+        doc.text('  Bond Repayment', rightCardX + 3, yPos);
+        doc.text(formatCurrency(houseBudget.breakdown.bondRepayment), rightCardX + cardWidth - 3, yPos, { align: 'right' });
+        yPos += 4;
+      }
+      if (houseBudget.breakdown.rates) {
+        doc.text('  Rates & Taxes', rightCardX + 3, yPos);
+        doc.text(formatCurrency(houseBudget.breakdown.rates), rightCardX + cardWidth - 3, yPos, { align: 'right' });
+        yPos += 4;
+      }
+      if (houseBudget.breakdown.insurance) {
+        doc.text('  Home Insurance', rightCardX + 3, yPos);
+        doc.text(formatCurrency(houseBudget.breakdown.insurance), rightCardX + cardWidth - 3, yPos, { align: 'right' });
+        yPos += 4;
+      }
+      if (houseBudget.breakdown.maintenance) {
+        doc.text('  Maintenance', rightCardX + 3, yPos);
+        doc.text(formatCurrency(houseBudget.breakdown.maintenance), rightCardX + cardWidth - 3, yPos, { align: 'right' });
+        yPos += 4;
+      }
+      yPos += 1;
+    }
+    
+    // Show car breakdown in AFTER mode
+    if (carBudget && carBudget.breakdown) {
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...COLORS.blue);
+      doc.text('Car', rightCardX + 3, yPos);
+      yPos += 5;
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(...COLORS.gray);
+      if (carBudget.breakdown.repayment) {
+        doc.text('  Monthly Repayment', rightCardX + 3, yPos);
+        doc.text(formatCurrency(carBudget.breakdown.repayment), rightCardX + cardWidth - 3, yPos, { align: 'right' });
+        yPos += 4;
+      }
+      if (carBudget.breakdown.insurance) {
+        doc.text('  Insurance', rightCardX + 3, yPos);
+        doc.text(formatCurrency(carBudget.breakdown.insurance), rightCardX + cardWidth - 3, yPos, { align: 'right' });
+        yPos += 4;
+      }
+      if (carBudget.breakdown.petrol) {
+        doc.text('  Petrol', rightCardX + 3, yPos);
+        doc.text(formatCurrency(carBudget.breakdown.petrol), rightCardX + cardWidth - 3, yPos, { align: 'right' });
+        yPos += 4;
+      }
+      yPos += 1;
+    }
   }
   
   customExpenses.slice(0, 3).forEach(expense => {
