@@ -181,24 +181,24 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
       if (houseBudget.breakdown.bondRepayment) {
         doc.text('  Bond Repayment', rightCardX + 3, yPos);
         doc.text(formatCurrency(houseBudget.breakdown.bondRepayment), rightCardX + cardWidth - 3, yPos, { align: 'right' });
-        yPos += 4;
+        yPos += 4.5;
       }
       if (houseBudget.breakdown.rates) {
         doc.text('  Rates & Taxes', rightCardX + 3, yPos);
         doc.text(formatCurrency(houseBudget.breakdown.rates), rightCardX + cardWidth - 3, yPos, { align: 'right' });
-        yPos += 4;
+        yPos += 4.5;
       }
       if (houseBudget.breakdown.insurance) {
         doc.text('  Home Insurance', rightCardX + 3, yPos);
         doc.text(formatCurrency(houseBudget.breakdown.insurance), rightCardX + cardWidth - 3, yPos, { align: 'right' });
-        yPos += 4;
+        yPos += 4.5;
       }
       if (houseBudget.breakdown.maintenance) {
         doc.text('  Maintenance', rightCardX + 3, yPos);
         doc.text(formatCurrency(houseBudget.breakdown.maintenance), rightCardX + cardWidth - 3, yPos, { align: 'right' });
-        yPos += 4;
+        yPos += 4.5;
       }
-      yPos += 1;
+      yPos += 3;
     }
     
     // Show car breakdown in AFTER mode
@@ -212,19 +212,19 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
       if (carBudget.breakdown.repayment) {
         doc.text('  Monthly Repayment', rightCardX + 3, yPos);
         doc.text(formatCurrency(carBudget.breakdown.repayment), rightCardX + cardWidth - 3, yPos, { align: 'right' });
-        yPos += 4;
+        yPos += 4.5;
       }
       if (carBudget.breakdown.insurance) {
         doc.text('  Insurance', rightCardX + 3, yPos);
         doc.text(formatCurrency(carBudget.breakdown.insurance), rightCardX + cardWidth - 3, yPos, { align: 'right' });
-        yPos += 4;
+        yPos += 4.5;
       }
       if (carBudget.breakdown.petrol) {
         doc.text('  Petrol', rightCardX + 3, yPos);
         doc.text(formatCurrency(carBudget.breakdown.petrol), rightCardX + cardWidth - 3, yPos, { align: 'right' });
-        yPos += 4;
+        yPos += 4.5;
       }
-      yPos += 1;
+      yPos += 3;
     }
   }
   
@@ -236,8 +236,8 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
     }
   });
   
-  // SAVINGS CARD (Full width)
-  yPos = 135;
+  // SAVINGS CARD (Full width) - position after expenses
+  yPos += 5; // Add spacing after last expense
   drawRoundedRect(doc, 15, yPos, 180, 8, COLORS.purple);
   doc.setFontSize(11);
   doc.setFont('helvetica', 'bold');
