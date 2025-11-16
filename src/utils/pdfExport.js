@@ -197,6 +197,13 @@ export const exportCashflowToPDF = (netSalary, carBudget, houseBudget, customExp
 };
 
 export const exportCarCalculatorToPDF = (netSalary, results, inputs) => {
+  // Validation
+  if (!results || !results.affordableCarPrice) {
+    console.error('Invalid results object passed to exportCarCalculatorToPDF:', results);
+    alert('Unable to export PDF: Calculation results are not available. Please ensure the calculator has valid results.');
+    return;
+  }
+  
   const doc = new jsPDF();
   
   // Logo
@@ -246,9 +253,9 @@ export const exportCarCalculatorToPDF = (netSalary, results, inputs) => {
     startY: yPos,
     head: [['Item', 'Amount']],
     body: [
-      ['Monthly Repayment', formatCurrency(results.breakdown.repayment)],
-      ['Insurance', formatCurrency(results.breakdown.insurance)],
-      ['Petrol', formatCurrency(results.breakdown.petrol)],
+      ['Monthly Repayment', formatCurrency(results.monthlyRepayment)],
+      ['Insurance', formatCurrency(inputs.insuranceCost)],
+      ['Petrol', formatCurrency(inputs.petrolCost)],
       ['Total Monthly Cost', formatCurrency(results.totalMonthlyCost)]
     ],
     theme: 'grid',
