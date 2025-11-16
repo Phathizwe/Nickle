@@ -144,15 +144,6 @@ function AppContent() {
                       </LayoutWrapper>
                     } 
                   />
-                  
-                  <Route 
-                    path="/house" 
-                    element={
-                      <LayoutWrapper>
-                        <HouseCalculatorMobile />
-                      </LayoutWrapper>
-                    } 
-                  />
 
                   <Route 
                     path="/vehicle-calculator" 
@@ -171,15 +162,6 @@ function AppContent() {
                     element={
                       <LayoutWrapper>
                         <CashflowBudget />
-                      </LayoutWrapper>
-                    } 
-                  />
-
-                  <Route 
-                    path="/vehicle" 
-                    element={
-                      <LayoutWrapper>
-                        <VehicleCalculatorMobile />
                       </LayoutWrapper>
                     } 
                   />

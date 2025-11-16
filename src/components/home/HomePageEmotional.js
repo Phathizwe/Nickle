@@ -49,9 +49,9 @@ const HomePageEmotional = () => {
   const handleExploreCalculator = (type) => {
     localStorage.setItem('initialNetSalary', netSalary);
     if (type === 'car') {
-      navigate('/vehicle', { state: { netSalary: parseFloat(netSalary) } });
+      navigate('/vehicle-calculator', { state: { netSalary: parseFloat(netSalary) } });
     } else {
-      navigate('/house', { state: { netSalary: parseFloat(netSalary) } });
+      navigate('/house-calculator', { state: { netSalary: parseFloat(netSalary) } });
     }
   };
 
