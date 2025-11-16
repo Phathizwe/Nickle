@@ -429,6 +429,35 @@ const HomePageModern = () => {
             </Card>
           </div>
 
+          {/* Budget Dashboard CTA - Show for logged-in users with calculations */}
+          {user && (carBudget || houseBudget) && (
+            <Card className="mb-8 bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-300 shadow-lg">
+              <CardContent className="p-8 text-center">
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <PieChart className="h-10 w-10 text-purple-600" />
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+                    Ready to Track Your Monthly Budget?
+                  </h2>
+                </div>
+                <p className="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">
+                  See your <span className="font-bold text-blue-600">car</span>{carBudget && houseBudget ? ' and ' : ''}<span className="font-bold text-green-600">{houseBudget ? 'house' : ''}</span> budgets in a complete monthly cashflow statement. Track expenses, savings, and see exactly where your money goes.
+                </p>
+                <Button
+                  onClick={() => navigate('/budget')}
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-lg px-8 py-6 rounded-xl shadow-lg"
+                  size="lg"
+                >
+                  <PieChart className="h-5 w-5 mr-2" />
+                  View Full Budget Dashboard
+                  <ArrowRight className="h-5 w-5 ml-2" />
+                </Button>
+                <p className="text-sm text-gray-500 mt-4">
+                  ✅ Monthly breakdown • 📊 Visual charts • 💾 PDF export
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Trust Signals */}
           <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-600">
             <div className="flex items-center gap-2">

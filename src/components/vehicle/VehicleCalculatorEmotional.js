@@ -5,10 +5,11 @@ import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Slider } from '../ui/slider';
-import { Car, Sparkles, TrendingUp, AlertCircle, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { Car, Sparkles, TrendingUp, AlertCircle, CheckCircle2, ArrowLeft, Download } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import Meta from '../SEO/Meta';
 import DualGoalModal from '../modals/DualGoalModal';
+import { exportCarCalculatorToPDF } from '../../utils/pdfExport';
 
 const VehicleCalculatorEmotional = () => {
   const location = useLocation();
@@ -351,6 +352,19 @@ const VehicleCalculatorEmotional = () => {
                           </span>
                         </div>
                       </div>
+                      
+                      {/* PDF Export Button */}
+                      <Button
+                        onClick={() => exportCarCalculatorToPDF(
+                          netSalary,
+                          results,
+                          { budgetPercentage, interestRate, loanTerm, deposit, insuranceCost, petrolCost }
+                        )}
+                        className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2"
+                      >
+                        <Download className="h-4 w-4" />
+                        Download PDF Report
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>

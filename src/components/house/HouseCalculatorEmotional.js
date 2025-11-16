@@ -5,10 +5,11 @@ import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Slider } from '../ui/slider';
-import { Home as HomeIcon, Sparkles, AlertCircle, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { Home as HomeIcon, Sparkles, AlertCircle, CheckCircle2, ArrowLeft, Download } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import Meta from '../SEO/Meta';
 import DualGoalModal from '../modals/DualGoalModal';
+import { exportHouseCalculatorToPDF } from '../../utils/pdfExport';
 
 const HouseCalculatorEmotional = () => {
   const location = useLocation();
@@ -374,6 +375,19 @@ const HouseCalculatorEmotional = () => {
                             </span>
                           </div>
                         </div>
+                        
+                        {/* PDF Export Button */}
+                        <Button
+                          onClick={() => exportHouseCalculatorToPDF(
+                            netSalary,
+                            results,
+                            { budgetPercentage, interestRate, loanTerm, deposit, ratesAndTaxes, insurance, maintenance }
+                          )}
+                          className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2"
+                        >
+                          <Download className="h-4 w-4" />
+                          Download PDF Report
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
