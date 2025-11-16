@@ -9,7 +9,7 @@ import {
   Car, ShoppingCart, Zap, Heart, Briefcase, PiggyBank,
   Plus, Edit2, Save, X, Check, Download
 } from 'lucide-react';
-import { exportCashflowToPDF } from '../../utils/pdfExport';
+import { exportCashflowWithTimelineToPDF } from '../../utils/pdfExportEnhanced';
 import { cn } from '../../lib/utils';
 
 const CashflowBudget = () => {
@@ -186,7 +186,7 @@ const CashflowBudget = () => {
             </div>
             {user && (
               <Button
-                onClick={() => exportCashflowToPDF(netSalary, carBudget, houseBudget, customExpenses, savings, budgetMode, currentHousingCost, currentTransportCost)}
+                onClick={() => exportCashflowWithTimelineToPDF(netSalary, carBudget, houseBudget, customExpenses, savings, budgetMode, currentHousingCost, currentTransportCost)}
                 className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
               >
                 <Download className="h-4 w-4" />
