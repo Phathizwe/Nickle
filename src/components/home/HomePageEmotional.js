@@ -37,9 +37,9 @@ const HomePageEmotional = () => {
     if (!salary) return null;
 
     return {
-      carBudget: Math.round(salary * 0.3 * 60 / 1.1),
+      carBudget: Math.round(salary * 0.2 * 60 / 1.1), // 20% of salary, approximate
       houseBudget: Math.round(salary * 0.3 * 240 / 1.1),
-      monthlyCarBudget: Math.round(salary * 0.15),
+      monthlyCarBudget: Math.round(salary * 0.3), // 30% for total vehicle costs
       monthlyHouseBudget: Math.round(salary * 0.3)
     };
   };
@@ -138,8 +138,10 @@ const HomePageEmotional = () => {
                     label="Car Budget"
                     amount={formatCurrency(estimates.carBudget)}
                     monthly={formatCurrency(estimates.monthlyCarBudget)}
+                    monthlyLabel="total vehicle costs"
                     color="blue"
                     onClick={() => handleExploreCalculator('car')}
+                    showApproximate={true}
                   />
 
                   <QuickEstimateCard
@@ -177,7 +179,7 @@ const HomePageEmotional = () => {
   );
 };
 
-const QuickEstimateCard = ({ icon: Icon, label, amount, monthly, color, onClick }) => {
+const QuickEstimateCard = ({ icon: Icon, label, amount, monthly, monthlyLabel, color, onClick, showApproximate }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const colorClasses = {
@@ -214,8 +216,12 @@ const QuickEstimateCard = ({ icon: Icon, label, amount, monthly, color, onClick 
           </div>
           <div className="text-left">
             <p className="text-sm font-medium text-gray-700">{label}</p>
-            <p className={cn("text-xl font-bold", colors.text)}>{amount}</p>
-            <p className="text-xs text-gray-500">{monthly}/month</p>
+            <p className={cn("text-xl font-bold", colors.text)}>
+              {showApproximate && '≈ '}{amount}
+            </p>
+            <p className="text-xs text-gray-500">
+              {monthly}/month {monthlyLabel ? `(${monthlyLabel})` : ''}
+            </p>
           </div>
         </div>
         <ArrowRight className={cn(
