@@ -1,0 +1,24 @@
+This patch adds comprehensive data persistence improvements to prevent data loss:
+
+1. Add onBlur handlers to current housing/transport cost inputs
+2. Add onBlur and onKeyPress (Enter) to custom expense inputs
+3. Add onBlur and onKeyPress (Enter) to savings inputs
+4. Ensure all edits save immediately when user leaves field or presses Enter
+
+Changes needed in CashflowBudget.js:
+
+Line 444-450 (Current Housing Cost Input):
+- Add onBlur handler to explicitly save to localStorage
+- Add onKeyPress handler for Enter key
+
+Line 464-470 (Current Transport Cost Input):
+- Add onBlur handler to explicitly save to localStorage  
+- Add onKeyPress handler for Enter key
+
+Line 487-493 (Custom Expense Input):
+- Add onBlur to call handleSaveExpense
+- Add onKeyPress for Enter key to call handleSaveExpense
+
+Line 657-663 (Savings Input):
+- Add onBlur to call handleSaveSaving
+- Add onKeyPress for Enter key to call handleSaveSaving

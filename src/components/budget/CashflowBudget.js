@@ -444,7 +444,20 @@ const CashflowBudget = () => {
                         <Input
                           type="number"
                           value={currentHousingCost}
-                          onChange={(e) => setCurrentHousingCost(parseFloat(e.target.value) || 0)}
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value) || 0;
+                            setCurrentHousingCost(value);
+                          }}
+                          onBlur={(e) => {
+                            const value = parseFloat(e.target.value) || 0;
+                            localStorage.setItem('currentHousingCost', value.toString());
+                          }}
+                          onKeyPress={(e) => {
+                            if (e.key === 'Enter') {
+                              const value = parseFloat(e.target.value) || 0;
+                              localStorage.setItem('currentHousingCost', value.toString());
+                            }
+                          }}
                           className="w-32 h-8"
                           placeholder="R 0"
                         />
@@ -464,7 +477,20 @@ const CashflowBudget = () => {
                         <Input
                           type="number"
                           value={currentTransportCost}
-                          onChange={(e) => setCurrentTransportCost(parseFloat(e.target.value) || 0)}
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value) || 0;
+                            setCurrentTransportCost(value);
+                          }}
+                          onBlur={(e) => {
+                            const value = parseFloat(e.target.value) || 0;
+                            localStorage.setItem('currentTransportCost', value.toString());
+                          }}
+                          onKeyPress={(e) => {
+                            if (e.key === 'Enter') {
+                              const value = parseFloat(e.target.value) || 0;
+                              localStorage.setItem('currentTransportCost', value.toString());
+                            }
+                          }}
                           className="w-32 h-8"
                           placeholder="R 0"
                         />
@@ -488,6 +514,16 @@ const CashflowBudget = () => {
                           type="number"
                           value={editingValue}
                           onChange={(e) => setEditingValue(e.target.value)}
+                          onBlur={() => {
+                            if (editingValue !== '') {
+                              handleSaveExpense(expense.id);
+                            }
+                          }}
+                          onKeyPress={(e) => {
+                            if (e.key === 'Enter') {
+                              handleSaveExpense(expense.id);
+                            }
+                          }}
                           className="w-32 h-8"
                           autoFocus
                         />
@@ -502,7 +538,10 @@ const CashflowBudget = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => setEditingExpense(null)}
+                          onClick={() => {
+                            setEditingExpense(null);
+                            setEditingValue('');
+                          }}
                           className="text-gray-600"
                         >
                           <X className="h-4 w-4" />
@@ -658,6 +697,16 @@ const CashflowBudget = () => {
                           type="number"
                           value={editingValue}
                           onChange={(e) => setEditingValue(e.target.value)}
+                          onBlur={() => {
+                            if (editingValue !== '') {
+                              handleSaveSaving(saving.id);
+                            }
+                          }}
+                          onKeyPress={(e) => {
+                            if (e.key === 'Enter') {
+                              handleSaveSaving(saving.id);
+                            }
+                          }}
                           className="w-32 h-8"
                           autoFocus
                         />
@@ -672,7 +721,10 @@ const CashflowBudget = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => setEditingExpense(null)}
+                          onClick={() => {
+                            setEditingExpense(null);
+                            setEditingValue('');
+                          }}
                           className="text-gray-600"
                         >
                           <X className="h-4 w-4" />
