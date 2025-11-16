@@ -119,8 +119,10 @@ const VehicleCalculatorMobile = () => {
                   onClick={() => exportCarCalculatorToPDF(netSalary, results, {
                     budgetPercentage,
                     deposit,
-                    term,
-                    interestRate
+                    loanTerm: term,
+                    interestRate,
+                    insuranceCost: insurance,
+                    petrolCost: petrol
                   })}
                   className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
                   size="sm"
