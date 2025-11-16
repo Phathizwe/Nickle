@@ -258,6 +258,71 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
     doc.text('⚠ You\'re overspending - Consider reducing expenses or increasing income', 105, yPos, { align: 'center' });
   }
   
+  // SAVINGS ANALYSIS - BEFORE mode only (on Page 1)
+  if (budgetMode === 'before' && (carBudget || houseBudget)) {
+    yPos += 20;
+    
+    // Section header
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...COLORS.darkGray);
+    doc.text('💡 Your Savings Plan', 105, yPos, { align: 'center' });
+    
+    yPos += 8;
+    
+    // Calculate timeline data
+    const carDeposit = carBudget ? (carBudget.affordableCarPrice * 0.20) : 0;
+    const houseDeposit = houseBudget ? (houseBudget.affordableHomePrice * 0.10) : 0;
+    const houseUpfrontCosts = houseBudget ? (houseDeposit + (houseBudget.transferDuty || 0) + (houseBudget.bondCosts || 0)) : 0;
+    
+    const monthsToSaveCar = carSavingsGoal > 0 ? Math.ceil(carDeposit / carSavingsGoal) : 0;
+    const monthsToSaveHouse = houseSavingsGoal > 0 ? Math.ceil(houseUpfrontCosts / houseSavingsGoal) : 0;
+    
+    // Car savings breakdown
+    if (carBudget && carSavingsGoal > 0) {
+      drawRoundedRect(doc, 20, yPos - 5, 170, 20, [219, 234, 254]);
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...COLORS.blue);
+      doc.text('🚗 Dream Car Savings', 25, yPos);
+      doc.setTextColor(...COLORS.darkGray);
+      doc.text(formatCurrency(carSavingsGoal) + '/month', 185, yPos, { align: 'right' });
+      
+      yPos += 6;
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(...COLORS.gray);
+      doc.text(`30% of salary (${formatCurrency(carSavingsGoalGross)}) - Current transport (${formatCurrency(currentTransportCost)})`, 25, yPos);
+      
+      yPos += 5;
+      doc.text(`Target: ${formatCurrency(carDeposit)} deposit • ${monthsToSaveCar} months to save`, 25, yPos);
+      
+      yPos += 12;
+    }
+    
+    // House savings breakdown
+    if (houseBudget && houseSavingsGoal > 0) {
+      drawRoundedRect(doc, 20, yPos - 5, 170, 20, [220, 252, 231]);
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...COLORS.green);
+      doc.text('🏠 Dream House Savings', 25, yPos);
+      doc.setTextColor(...COLORS.darkGray);
+      doc.text(formatCurrency(houseSavingsGoal) + '/month', 185, yPos, { align: 'right' });
+      
+      yPos += 6;
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(...COLORS.gray);
+      doc.text(`30% of salary (${formatCurrency(houseSavingsGoalGross)}) - Current housing (${formatCurrency(currentHousingCost)})`, 25, yPos);
+      
+      yPos += 5;
+      doc.text(`Target: ${formatCurrency(houseUpfrontCosts)} (deposit + costs) • ${monthsToSaveHouse} months to save`, 25, yPos);
+      
+      yPos += 12;
+    }
+  }
+  
   // Footer
   yPos = 280;
   doc.setFontSize(8);
