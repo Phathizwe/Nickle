@@ -204,26 +204,6 @@ const Header = () => {
 
   return (
     <header className="bg-white border-b sticky top-0 z-50">
-    {/* Soft Launch Banner with Feedback */}
-      <a 
-        href="mailto:nickle@hinas.co.za?subject=Nickle Feedback - Test Mode"
-        className="
-          block bg-gradient-to-r from-blue-600 to-blue-400 text-white px-4 py-2 
-          text-sm text-center transition-all duration-200 
-          hover:from-blue-700 hover:to-blue-500 cursor-pointer
-          group
-        "
-      >
-        <div className="flex items-center justify-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
-          <span className="font-medium">Soft Launch - Test Mode</span>
-          <span className="hidden sm:inline text-blue-100">•</span>
-          <span className="hidden sm:inline text-blue-100 group-hover:text-white group-hover:underline">
-            Click here to send feedback
-          </span>
-        </div>
-      </a>
-      
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
