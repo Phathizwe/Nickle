@@ -9,7 +9,7 @@ import {
   Car, ShoppingCart, Zap, Heart, Briefcase, PiggyBank,
   Plus, Edit2, Save, X, Check, Download
 } from 'lucide-react';
-import { exportCashflowWithTimelineToPDF } from '../../utils/pdfExportBranded';
+import { exportCashflowWithTimelineToPDF } from '../../utils/pdfExportBrandedNew';
 import { cn } from '../../lib/utils';
 
 const CashflowBudget = () => {
