@@ -23,12 +23,16 @@ const CashflowBudget = () => {
   // Get calculator results
   const [carBudget, setCarBudget] = useState(() => {
     const saved = localStorage.getItem('carCalculation');
-    return saved ? JSON.parse(saved) : null;
+    const parsed = saved ? JSON.parse(saved) : null;
+    console.log('Car Budget loaded:', parsed);
+    return parsed;
   });
   
   const [houseBudget, setHouseBudget] = useState(() => {
     const saved = localStorage.getItem('houseCalculation');
-    return saved ? JSON.parse(saved) : null;
+    const parsed = saved ? JSON.parse(saved) : null;
+    console.log('House Budget loaded:', parsed);
+    return parsed;
   });
 
   // Custom expense categories
@@ -338,6 +342,7 @@ const CashflowBudget = () => {
 
             <div className="space-y-2">
               {/* House - Detailed Breakdown */}
+              {console.log('Rendering expenses - budgetMode:', budgetMode, 'houseBudget:', houseBudget, 'carBudget:', carBudget)}
               {houseBudget && houseBudget.breakdown && (
                 <div className="space-y-2">
                   {/* House Header */}
