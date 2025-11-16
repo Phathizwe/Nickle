@@ -9,7 +9,7 @@ import { Home as HomeIcon, Sparkles, AlertCircle, CheckCircle2, ArrowLeft, Downl
 import { cn } from '../../lib/utils';
 import Meta from '../SEO/Meta';
 import DualGoalModal from '../modals/DualGoalModal';
-import { exportHouseCalculatorToPDF } from '../../utils/pdfExport';
+import { exportHouseCalculatorToPDF } from '../../utils/pdfExportBranded';
 
 const HouseCalculatorEmotional = () => {
   const location = useLocation();

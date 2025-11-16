@@ -36,6 +36,50 @@ const drawCircle = (doc, x, y, radius, fillColor) => {
   doc.circle(x, y, radius, 'F');
 };
 
+// Helper function to draw branded header
+const drawBrandedHeader = (doc, title) => {
+  // Header background
+  drawRoundedRect(doc, 10, 10, 190, 30, COLORS.lightGray);
+  
+  // Nickle branding
+  doc.setFontSize(24);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...COLORS.darkGreen);
+  doc.text('N', 20, 28);
+  
+  doc.setFontSize(18);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...COLORS.darkGreen);
+  doc.text('Nickle', 38, 22);
+  
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(...COLORS.gray);
+  doc.text('Smart Budgets Meet Big Ambitions', 38, 28);
+  
+  // Title
+  doc.setFontSize(20);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...COLORS.black);
+  doc.text(title, 105, 20, { align: 'center' });
+  
+  // Date
+  doc.setFontSize(8);
+  doc.setTextColor(...COLORS.gray);
+  doc.text(`Generated ${new Date().toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' })}`, 105, 35, { align: 'center' });
+};
+
+// Helper function to draw footer
+const drawFooter = (doc) => {
+  doc.setFontSize(8);
+  doc.setTextColor(...COLORS.gray);
+  doc.text('Smart Budgets Meet Big Ambitions', 105, 280, { align: 'center' });
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...COLORS.darkGreen);
+  doc.text('www.nickle.co.za', 105, 287, { align: 'center' });
+};
+
 export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudget, customExpenses, savings, budgetMode = 'after', currentHousingCost = 0, currentTransportCost = 0) => {
   const doc = new jsPDF();
   
@@ -270,11 +314,10 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
     doc.setTextColor(...COLORS.black);
     doc.text('Your Savings Plan', 105, yPos, { align: 'center' });
     
-    yPos += 8;
+    yPos += 10;
     
-    const carDeposit = carBudget ? (carBudget.affordableCarPrice * 0.20) : 0;
-    const houseDeposit = houseBudget ? (houseBudget.affordableHomePrice * 0.10) : 0;
-    const houseUpfrontCosts = houseBudget ? (houseBudget.totalUpfront || houseDeposit) : 0;
+    const carDeposit = carBudget ? (carBudget.affordableCarPrice * 0.10) : 0;
+    const houseUpfrontCosts = houseBudget ? houseBudget.totalUpfront : 0;
     
     const monthsToSaveCar = carSavingsGoal > 0 ? Math.ceil(carDeposit / carSavingsGoal) : 0;
     const monthsToSaveHouse = houseSavingsGoal > 0 ? Math.ceil(houseUpfrontCosts / houseSavingsGoal) : 0;
@@ -327,10 +370,10 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
   doc.text('Smart Budgets Meet Big Ambitions', 105, yPos, { align: 'center' });
   doc.setFontSize(9);
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(...COLORS.green);
-  doc.text('www.nickle.co.za', 105, yPos + 5, { align: 'center' });
+  doc.setTextColor(...COLORS.darkGreen);
+  doc.text('www.nickle.co.za', 105, 287, { align: 'center' });
   
-  // ============ PAGE 2: TIMELINE (BEFORE MODE ONLY) ============
+  // ============ PAGE 2: SAVINGS TIMELINE (BEFORE mode only) ============
   
   if (budgetMode === 'before' && (carBudget || houseBudget)) {
     doc.addPage();
@@ -357,106 +400,107 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
     doc.setFontSize(20);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...COLORS.black);
-    doc.text('Your Journey to Financial Freedom', 105, 20, { align: 'center' });
+    doc.text('Your Savings Journey', 105, 20, { align: 'center' });
     
-    doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
     doc.setTextColor(...COLORS.gray);
-    doc.text('Savings timeline to achieve your dream car and house', 105, 27, { align: 'center' });
-    
-    // Calculate timeline
-    const carDeposit = carBudget ? (carBudget.affordableCarPrice * 0.20) : 0;
-    const houseDeposit = houseBudget ? (houseBudget.affordableHomePrice * 0.10) : 0;
-    const houseUpfrontCosts = houseBudget ? (houseBudget.totalUpfront || houseDeposit) : 0;
-    
-    const monthsToSaveCar = carSavingsGoal > 0 ? Math.ceil(carDeposit / carSavingsGoal) : 0;
-    const monthsToSaveHouse = houseSavingsGoal > 0 ? Math.ceil(houseUpfrontCosts / houseSavingsGoal) : 0;
-    
-    const today = new Date();
-    const carTargetDate = new Date(today.getFullYear(), today.getMonth() + monthsToSaveCar, 1);
-    const houseTargetDate = new Date(today.getFullYear(), today.getMonth() + monthsToSaveHouse, 1);
+    doc.text(`Generated ${new Date().toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' })}`, 105, 35, { align: 'center' });
     
     yPos = 60;
     
-    doc.setFontSize(15);
+    // Timeline visualization
+    const carDeposit = carBudget ? (carBudget.affordableCarPrice * 0.10) : 0;
+    const houseUpfrontCosts = houseBudget ? houseBudget.totalUpfront : 0;
+    
+    const monthsToSaveCar = carSavingsGoal > 0 ? Math.ceil(carDeposit / carSavingsGoal) : 0;
+    const monthsToSaveHouse = houseSavingsGoal > 0 ? Math.ceil(houseUpfrontCosts / houseSavingsGoal) : 0;
+    const maxMonths = Math.max(monthsToSaveCar, monthsToSaveHouse);
+    
+    // Calculate milestone dates
+    const today = new Date();
+    const carDate = new Date(today);
+    carDate.setMonth(carDate.getMonth() + monthsToSaveCar);
+    const houseDate = new Date(today);
+    houseDate.setMonth(houseDate.getMonth() + monthsToSaveHouse);
+    const successDate = new Date(today);
+    successDate.setMonth(successDate.getMonth() + maxMonths);
+    
+    // Timeline title
+    doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...COLORS.black);
-    doc.text('Savings Milestones', 105, yPos, { align: 'center' });
+    doc.text('Your Path to Financial Success', 105, yPos, { align: 'center' });
     
-    yPos = 90;
+    yPos += 15;
     
-    // Timeline
-    const timelineY = yPos;
-    const startX = 30;
-    const endX = 180;
-    const lineLength = endX - startX;
+    // Horizontal timeline line
+    const timelineY = yPos + 20;
+    const timelineStartX = 30;
+    const timelineEndX = 180;
+    const timelineLength = timelineEndX - timelineStartX;
     
+    // Draw timeline line
     doc.setDrawColor(...COLORS.gray);
-    doc.setLineWidth(2);
-    doc.line(startX, timelineY, endX, timelineY);
+    doc.setLineWidth(0.5);
+    doc.line(timelineStartX, timelineY, timelineEndX, timelineY);
     
-    // TODAY
-    drawCircle(doc, startX, timelineY, 8, COLORS.blue);
-    doc.setFontSize(10);
+    // Milestone 1: TODAY
+    drawCircle(doc, timelineStartX, timelineY, 4, COLORS.blue);
+    doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...COLORS.blue);
-    doc.text('TODAY', startX, timelineY - 15, { align: 'center' });
-    doc.setFont('helvetica', 'normal');
+    doc.text('TODAY', timelineStartX, timelineY - 8, { align: 'center' });
     doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
     doc.setTextColor(...COLORS.gray);
-    doc.text('Start Saving', startX, timelineY - 10, { align: 'center' });
-    doc.text(today.toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' }), startX, timelineY + 15, { align: 'center' });
+    doc.text(today.toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' }), timelineStartX, timelineY + 8, { align: 'center' });
+    doc.text('Start Saving', timelineStartX, timelineY + 13, { align: 'center' });
     
-    // CAR
+    // Milestone 2: CAR (if applicable)
     if (carBudget && monthsToSaveCar > 0) {
-      const carX = startX + (lineLength * 0.4);
-      drawCircle(doc, carX, timelineY, 8, COLORS.orange);
-      doc.setFontSize(10);
+      const carX = timelineStartX + (timelineLength * (monthsToSaveCar / maxMonths));
+      drawCircle(doc, carX, timelineY, 4, COLORS.orange);
+      doc.setFontSize(9);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(...COLORS.orange);
-      doc.text('CAR', carX, timelineY - 15, { align: 'center' });
-      doc.setFont('helvetica', 'normal');
+      doc.text('CAR', carX, timelineY - 8, { align: 'center' });
       doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
       doc.setTextColor(...COLORS.gray);
-      doc.text(`${monthsToSaveCar} months`, carX, timelineY - 10, { align: 'center' });
-      doc.text(carTargetDate.toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' }), carX, timelineY + 15, { align: 'center' });
-      doc.setFontSize(7);
-      doc.text(formatCurrency(carDeposit), carX, timelineY + 20, { align: 'center' });
+      doc.text(carDate.toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' }), carX, timelineY + 8, { align: 'center' });
+      doc.text(formatCurrency(carDeposit), carX, timelineY + 13, { align: 'center' });
     }
     
-    // HOUSE
+    // Milestone 3: HOUSE (if applicable)
     if (houseBudget && monthsToSaveHouse > 0) {
-      const houseX = startX + (lineLength * 0.7);
-      drawCircle(doc, houseX, timelineY, 8, COLORS.green);
-      doc.setFontSize(10);
+      const houseX = timelineStartX + (timelineLength * (monthsToSaveHouse / maxMonths));
+      drawCircle(doc, houseX, timelineY, 4, COLORS.green);
+      doc.setFontSize(9);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(...COLORS.green);
-      doc.text('HOUSE', houseX, timelineY - 15, { align: 'center' });
-      doc.setFont('helvetica', 'normal');
+      doc.text('HOUSE', houseX, timelineY - 8, { align: 'center' });
       doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
       doc.setTextColor(...COLORS.gray);
-      doc.text(`${monthsToSaveHouse} months`, houseX, timelineY - 10, { align: 'center' });
-      doc.text(houseTargetDate.toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' }), houseX, timelineY + 15, { align: 'center' });
-      doc.setFontSize(7);
-      doc.text(formatCurrency(houseUpfrontCosts), houseX, timelineY + 20, { align: 'center' });
+      doc.text(houseDate.toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' }), houseX, timelineY + 8, { align: 'center' });
+      doc.text(formatCurrency(houseUpfrontCosts), houseX, timelineY + 13, { align: 'center' });
     }
     
-    // SUCCESS
-    const maxMonths = Math.max(monthsToSaveCar, monthsToSaveHouse);
-    const dreamDate = new Date(today.getFullYear(), today.getMonth() + maxMonths, 1);
-    drawCircle(doc, endX, timelineY, 8, COLORS.purple);
-    doc.setFontSize(10);
+    // Milestone 4: SUCCESS
+    drawCircle(doc, timelineEndX, timelineY, 4, COLORS.purple);
+    doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...COLORS.purple);
-    doc.text('SUCCESS', endX, timelineY - 15, { align: 'center' });
-    doc.setFont('helvetica', 'normal');
+    doc.text('SUCCESS', timelineEndX, timelineY - 8, { align: 'center' });
     doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
     doc.setTextColor(...COLORS.gray);
-    doc.text('Dreams Achieved', endX, timelineY - 10, { align: 'center' });
-    doc.text(dreamDate.toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' }), endX, timelineY + 15, { align: 'center' });
+    doc.text(successDate.toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' }), timelineEndX, timelineY + 8, { align: 'center' });
+    doc.text('Goals Achieved', timelineEndX, timelineY + 13, { align: 'center' });
+    
+    yPos = timelineY + 40;
     
     // Monthly Savings Breakdown
-    yPos = 140;
     doc.setFontSize(13);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...COLORS.black);
@@ -529,13 +573,286 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
     doc.text('Smart Budgets Meet Big Ambitions', 105, yPos, { align: 'center' });
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
-    doc.setTextColor(...COLORS.green);
-    doc.text('www.nickle.co.za', 105, yPos + 5, { align: 'center' });
+    doc.setTextColor(...COLORS.darkGreen);
+    doc.text('www.nickle.co.za', 105, 287, { align: 'center' });
   }
   
-  // Save
-  const filename = budgetMode === 'before' 
-    ? 'Nickle-Savings-Journey.pdf'
-    : 'Nickle-Cashflow-Statement.pdf';
-  doc.save(filename);
+  doc.save('Nickle-Cashflow-Budget.pdf');
+};
+
+export const exportHouseCalculatorToPDF = (netSalary, results, inputs) => {
+  // Validation
+  if (!results || !results.affordableHousePrice) {
+    console.error('Invalid results object passed to exportHouseCalculatorToPDF:', results);
+    alert('Unable to export PDF: Calculation results are not available. Please ensure the calculator has valid results.');
+    return;
+  }
+  
+  const doc = new jsPDF();
+  
+  // Branded header
+  drawBrandedHeader(doc, 'Home Affordability Report');
+  
+  let yPos = 50;
+  
+  // HERO RESULT - Big, bold, centered
+  drawRoundedRect(doc, 20, yPos, 170, 35, [220, 252, 231]);
+  
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(...COLORS.gray);
+  doc.text('You can afford a home worth', 105, yPos + 10, { align: 'center' });
+  
+  doc.setFontSize(28);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...COLORS.darkGreen);
+  doc.text(formatCurrency(results.affordableHousePrice), 105, yPos + 22, { align: 'center' });
+  
+  // Status badge
+  drawRoundedRect(doc, 85, yPos + 27, 40, 6, COLORS.turquoise);
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(255, 255, 255);
+  doc.text('✓ Within Budget', 105, yPos + 31, { align: 'center' });
+  
+  yPos += 45;
+  
+  // MONTHLY COSTS Section
+  drawRoundedRect(doc, 15, yPos - 5, 180, 8, COLORS.orange);
+  doc.setFontSize(13);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(255, 255, 255);
+  doc.text('MONTHLY COSTS', 20, yPos);
+  
+  yPos += 8;
+  doc.autoTable({
+    startY: yPos,
+    head: [['Item', 'Amount']],
+    body: [
+      ['Bond Repayment', formatCurrency(results.monthlyRepayment)],
+      ['Rates & Taxes', formatCurrency(inputs.ratesAndTaxes)],
+      ['Home Insurance', formatCurrency(inputs.insurance)],
+      ['Maintenance', formatCurrency(inputs.maintenance)],
+      [{ content: 'Total Monthly Cost', styles: { fontStyle: 'bold' } }, { content: formatCurrency(results.totalMonthlyCost), styles: { fontStyle: 'bold' } }]
+    ],
+    theme: 'striped',
+    headStyles: { 
+      fillColor: COLORS.orange,
+      fontSize: 10,
+      fontStyle: 'bold'
+    },
+    bodyStyles: {
+      fontSize: 9
+    },
+    margin: { left: 20, right: 20 },
+    alternateRowStyles: { fillColor: [255, 247, 237] }
+  });
+  
+  yPos = doc.lastAutoTable.finalY + 15;
+  
+  // UPFRONT COSTS Section
+  drawRoundedRect(doc, 15, yPos - 5, 180, 8, COLORS.blue);
+  doc.setFontSize(13);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(255, 255, 255);
+  doc.text('UPFRONT COSTS', 20, yPos);
+  
+  yPos += 8;
+  doc.autoTable({
+    startY: yPos,
+    head: [['Item', 'Amount']],
+    body: [
+      ['Down Payment', formatCurrency(results.downPayment)],
+      ['Transfer Duty', formatCurrency(results.transferDuty)],
+      ['Bond Registration', formatCurrency(results.bondRegistration)],
+      ['Bond Initiation', formatCurrency(results.bondInitiation)],
+      [{ content: 'Total Upfront', styles: { fontStyle: 'bold' } }, { content: formatCurrency(results.totalUpfront), styles: { fontStyle: 'bold' } }]
+    ],
+    theme: 'striped',
+    headStyles: { 
+      fillColor: COLORS.blue,
+      fontSize: 10,
+      fontStyle: 'bold'
+    },
+    bodyStyles: {
+      fontSize: 9
+    },
+    margin: { left: 20, right: 20 },
+    alternateRowStyles: { fillColor: [239, 246, 255] }
+  });
+  
+  yPos = doc.lastAutoTable.finalY + 15;
+  
+  // LOAN DETAILS Section
+  drawRoundedRect(doc, 15, yPos - 5, 180, 8, COLORS.gray);
+  doc.setFontSize(13);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(255, 255, 255);
+  doc.text('LOAN DETAILS', 20, yPos);
+  
+  yPos += 8;
+  doc.autoTable({
+    startY: yPos,
+    head: [['Parameter', 'Value']],
+    body: [
+      ['Monthly Salary', formatCurrency(netSalary)],
+      ['Budget for Housing', `${inputs.budgetPercentage}%`],
+      ['Down Payment', `${inputs.downPaymentPercentage}%`],
+      ['Loan Term', `${inputs.loanTerm / 12} years`],
+      ['Interest Rate', `${inputs.interestRate}%`]
+    ],
+    theme: 'striped',
+    headStyles: { 
+      fillColor: COLORS.gray,
+      fontSize: 10,
+      fontStyle: 'bold'
+    },
+    bodyStyles: {
+      fontSize: 9
+    },
+    margin: { left: 20, right: 20 },
+    alternateRowStyles: { fillColor: [249, 250, 251] }
+  });
+  
+  // Footer
+  drawFooter(doc);
+  
+  doc.save('Nickle-House-Affordability-Report.pdf');
+};
+
+export const exportCarCalculatorToPDF = (netSalary, results, inputs) => {
+  // Validation
+  if (!results || !results.affordableCarPrice) {
+    console.error('Invalid results object passed to exportCarCalculatorToPDF:', results);
+    alert('Unable to export PDF: Calculation results are not available. Please ensure the calculator has valid results.');
+    return;
+  }
+  
+  const doc = new jsPDF();
+  
+  // Branded header
+  drawBrandedHeader(doc, 'Car Affordability Report');
+  
+  let yPos = 50;
+  
+  // HERO RESULT - Big, bold, centered
+  drawRoundedRect(doc, 20, yPos, 170, 35, [219, 234, 254]);
+  
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(...COLORS.gray);
+  doc.text('You can afford a car worth', 105, yPos + 10, { align: 'center' });
+  
+  doc.setFontSize(28);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...COLORS.blue);
+  doc.text(formatCurrency(results.affordableCarPrice), 105, yPos + 22, { align: 'center' });
+  
+  // Status badge
+  drawRoundedRect(doc, 85, yPos + 27, 40, 6, COLORS.turquoise);
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(255, 255, 255);
+  doc.text('✓ Within Budget', 105, yPos + 31, { align: 'center' });
+  
+  yPos += 45;
+  
+  // MONTHLY COSTS Section
+  drawRoundedRect(doc, 15, yPos - 5, 180, 8, COLORS.orange);
+  doc.setFontSize(13);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(255, 255, 255);
+  doc.text('MONTHLY COSTS', 20, yPos);
+  
+  yPos += 8;
+  doc.autoTable({
+    startY: yPos,
+    head: [['Item', 'Amount']],
+    body: [
+      ['Monthly Repayment', formatCurrency(results.monthlyRepayment)],
+      ['Insurance', formatCurrency(inputs.insurance)],
+      ['Petrol', formatCurrency(inputs.petrol)],
+      [{ content: 'Total Monthly Cost', styles: { fontStyle: 'bold' } }, { content: formatCurrency(results.totalMonthlyCost), styles: { fontStyle: 'bold' } }]
+    ],
+    theme: 'striped',
+    headStyles: { 
+      fillColor: COLORS.orange,
+      fontSize: 10,
+      fontStyle: 'bold'
+    },
+    bodyStyles: {
+      fontSize: 9
+    },
+    margin: { left: 20, right: 20 },
+    alternateRowStyles: { fillColor: [255, 247, 237] }
+  });
+  
+  yPos = doc.lastAutoTable.finalY + 15;
+  
+  // UPFRONT COSTS Section
+  drawRoundedRect(doc, 15, yPos - 5, 180, 8, COLORS.blue);
+  doc.setFontSize(13);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(255, 255, 255);
+  doc.text('UPFRONT COSTS', 20, yPos);
+  
+  yPos += 8;
+  doc.autoTable({
+    startY: yPos,
+    head: [['Item', 'Amount']],
+    body: [
+      ['Down Payment', formatCurrency(results.downPayment)],
+      ['License & Registration', formatCurrency(inputs.licenseAndRegistration)],
+      [{ content: 'Total Upfront', styles: { fontStyle: 'bold' } }, { content: formatCurrency(results.totalUpfront), styles: { fontStyle: 'bold' } }]
+    ],
+    theme: 'striped',
+    headStyles: { 
+      fillColor: COLORS.blue,
+      fontSize: 10,
+      fontStyle: 'bold'
+    },
+    bodyStyles: {
+      fontSize: 9
+    },
+    margin: { left: 20, right: 20 },
+    alternateRowStyles: { fillColor: [239, 246, 255] }
+  });
+  
+  yPos = doc.lastAutoTable.finalY + 15;
+  
+  // LOAN DETAILS Section
+  drawRoundedRect(doc, 15, yPos - 5, 180, 8, COLORS.gray);
+  doc.setFontSize(13);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(255, 255, 255);
+  doc.text('LOAN DETAILS', 20, yPos);
+  
+  yPos += 8;
+  doc.autoTable({
+    startY: yPos,
+    head: [['Parameter', 'Value']],
+    body: [
+      ['Monthly Salary', formatCurrency(netSalary)],
+      ['Budget for Transport', `${inputs.budgetPercentage}%`],
+      ['Down Payment', `${inputs.downPaymentPercentage}%`],
+      ['Loan Term', `${inputs.loanTerm / 12} years`],
+      ['Interest Rate', `${inputs.interestRate}%`]
+    ],
+    theme: 'striped',
+    headStyles: { 
+      fillColor: COLORS.gray,
+      fontSize: 10,
+      fontStyle: 'bold'
+    },
+    bodyStyles: {
+      fontSize: 9
+    },
+    margin: { left: 20, right: 20 },
+    alternateRowStyles: { fillColor: [249, 250, 251] }
+  });
+  
+  // Footer
+  drawFooter(doc);
+  
+  doc.save('Nickle-Car-Affordability-Report.pdf');
 };
