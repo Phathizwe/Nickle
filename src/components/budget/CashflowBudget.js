@@ -58,6 +58,15 @@ const CashflowBudget = () => {
   const [budgetMode, setBudgetMode] = useState(() => {
     return localStorage.getItem('budgetMode') || 'after';
   });
+  
+  // Current costs (for BEFORE mode calculations)
+  const [currentHousingCost, setCurrentHousingCost] = useState(() => {
+    return parseFloat(localStorage.getItem('currentHousingCost')) || 0;
+  });
+  
+  const [currentTransportCost, setCurrentTransportCost] = useState(() => {
+    return parseFloat(localStorage.getItem('currentTransportCost')) || 0;
+  });
 
   useEffect(() => {
     localStorage.setItem('customExpenses', JSON.stringify(customExpenses));
@@ -77,6 +86,14 @@ const CashflowBudget = () => {
     localStorage.setItem('budgetMode', budgetMode);
   }, [budgetMode]);
 
+  useEffect(() => {
+    localStorage.setItem('currentHousingCost', currentHousingCost.toString());
+  }, [currentHousingCost]);
+
+  useEffect(() => {
+    localStorage.setItem('currentTransportCost', currentTransportCost.toString());
+  }, [currentTransportCost]);
+
   const formatCurrency = (value) => {
     if (!value && value !== 0) return 'R 0';
     return 'R ' + Math.round(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
@@ -89,12 +106,16 @@ const CashflowBudget = () => {
   // BEFORE mode: Show savings goals for deposits
   const carExpenses = (budgetMode === 'after' && carBudget) ? carBudget.totalMonthlyCost : 0;
   const houseExpenses = (budgetMode === 'after' && houseBudget) ? houseBudget.totalMonthlyCost : 0;
+  const currentCostsExpenses = (budgetMode === 'before') ? (currentHousingCost + currentTransportCost) : 0;
   const customExpensesTotal = customExpenses.reduce((sum, exp) => sum + (exp.amount || 0), 0);
-  const totalExpenses = carExpenses + houseExpenses + customExpensesTotal;
+  const totalExpenses = carExpenses + houseExpenses + currentCostsExpenses + customExpensesTotal;
   
   // Calculate savings for BEFORE mode
-  const carSavingsGoal = (budgetMode === 'before' && carBudget) ? netSalary * 0.30 : 0;
-  const houseSavingsGoal = (budgetMode === 'before' && houseBudget) ? netSalary * 0.30 : 0;
+  // Net savings = Dream budget (30%) - Current costs
+  const carSavingsGoalGross = (budgetMode === 'before' && carBudget) ? netSalary * 0.30 : 0;
+  const houseSavingsGoalGross = (budgetMode === 'before' && houseBudget) ? netSalary * 0.30 : 0;
+  const carSavingsGoal = Math.max(0, carSavingsGoalGross - currentTransportCost);
+  const houseSavingsGoal = Math.max(0, houseSavingsGoalGross - currentHousingCost);
   const regularSavings = savings.reduce((sum, sav) => sum + (sav.amount || 0), 0);
   const totalSavings = regularSavings + carSavingsGoal + houseSavingsGoal;
   
@@ -323,7 +344,12 @@ const CashflowBudget = () => {
                   <div className="flex items-center justify-between py-2 px-3 bg-green-50 rounded-lg">
                     <div className="flex items-center gap-2">
                       <HomeIcon className="h-5 w-5 text-green-600" />
-                      <span className="font-bold text-gray-900">House</span>
+                      <span className="font-bold text-gray-900">
+                        {budgetMode === 'before' ? '🏠 Dream House Expenses' : 'House'}
+                      </span>
+                      {budgetMode === 'before' && (
+                        <span className="text-sm text-gray-500">(collapsed)</span>
+                      )}
                     </div>
                     <Button
                       variant="ghost"
@@ -335,7 +361,8 @@ const CashflowBudget = () => {
                     </Button>
                   </div>
                   
-                  {/* House Line Items */}
+                  {/* House Line Items - Hidden in BEFORE mode */}
+                  {budgetMode === 'after' && (
                   <div className="pl-8 space-y-1">
                     <div className="flex items-center justify-between py-2 px-3 bg-white rounded-lg">
                       <span className="text-gray-700 text-sm">Bond Repayment</span>
@@ -354,6 +381,7 @@ const CashflowBudget = () => {
                       <span className="font-semibold text-gray-900">{formatCurrency(houseBudget.breakdown.maintenance)}</span>
                     </div>
                   </div>
+                  )}
                 </div>
               )}
 
@@ -364,7 +392,12 @@ const CashflowBudget = () => {
                   <div className="flex items-center justify-between py-2 px-3 bg-blue-50 rounded-lg">
                     <div className="flex items-center gap-2">
                       <Car className="h-5 w-5 text-blue-600" />
-                      <span className="font-bold text-gray-900">Car</span>
+                      <span className="font-bold text-gray-900">
+                        {budgetMode === 'before' ? '🚗 Dream Car Expenses' : 'Car'}
+                      </span>
+                      {budgetMode === 'before' && (
+                        <span className="text-sm text-gray-500">(collapsed)</span>
+                      )}
                     </div>
                     <Button
                       variant="ghost"
@@ -376,7 +409,8 @@ const CashflowBudget = () => {
                     </Button>
                   </div>
                   
-                  {/* Car Line Items */}
+                  {/* Car Line Items - Hidden in BEFORE mode */}
+                  {budgetMode === 'after' && (
                   <div className="pl-8 space-y-1">
                     <div className="flex items-center justify-between py-2 px-3 bg-white rounded-lg">
                       <span className="text-gray-700 text-sm">Monthly Repayment</span>
@@ -391,7 +425,53 @@ const CashflowBudget = () => {
                       <span className="font-semibold text-gray-900">{formatCurrency(carBudget.breakdown.petrol)}</span>
                     </div>
                   </div>
+                  )}
                 </div>
+              )}
+
+              {/* Current Costs - BEFORE mode only */}
+              {budgetMode === 'before' && (
+                <>
+                  {/* Current Housing Cost */}
+                  <div className="py-3 px-3 bg-yellow-50 border-2 border-yellow-300 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <HomeIcon className="h-5 w-5 text-yellow-600" />
+                        <span className="font-semibold text-gray-900">Current Housing Costs</span>
+                        <span className="text-xs text-gray-500">(rent, current bond, etc.)</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="number"
+                          value={currentHousingCost}
+                          onChange={(e) => setCurrentHousingCost(parseFloat(e.target.value) || 0)}
+                          className="w-32 h-8"
+                          placeholder="R 0"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Current Transport Cost */}
+                  <div className="py-3 px-3 bg-yellow-50 border-2 border-yellow-300 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Car className="h-5 w-5 text-yellow-600" />
+                        <span className="font-semibold text-gray-900">Current Transport Costs</span>
+                        <span className="text-xs text-gray-500">(taxi, Uber, current car, etc.)</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="number"
+                          value={currentTransportCost}
+                          onChange={(e) => setCurrentTransportCost(parseFloat(e.target.value) || 0)}
+                          className="w-32 h-8"
+                          placeholder="R 0"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </>
               )}
 
               {/* Custom Expenses */}
@@ -489,6 +569,23 @@ const CashflowBudget = () => {
                     </div>
                     <span className="text-xl font-bold text-blue-600">{formatCurrency(carSavingsGoal)}</span>
                   </div>
+                  {/* Breakdown */}
+                  <div className="text-sm bg-white p-3 rounded-lg mb-2">
+                    <div className="flex justify-between mb-1">
+                      <span className="text-gray-600">💰 Dream car budget (30%)</span>
+                      <span className="font-semibold text-blue-600">{formatCurrency(carSavingsGoalGross)}</span>
+                    </div>
+                    {currentTransportCost > 0 && (
+                      <div className="flex justify-between mb-1">
+                        <span className="text-gray-600">➖ Current transport costs</span>
+                        <span className="font-semibold text-red-600">-{formatCurrency(currentTransportCost)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between pt-2 border-t border-gray-200">
+                      <span className="font-bold text-gray-900">= Additional savings needed</span>
+                      <span className="font-bold text-blue-600">{formatCurrency(carSavingsGoal)}</span>
+                    </div>
+                  </div>
                   <div className="text-sm text-gray-600">
                     <div className="flex justify-between mb-1">
                       <span>Target: {formatCurrency(carUpfrontCosts)} (20% deposit)</span>
@@ -515,6 +612,23 @@ const CashflowBudget = () => {
                       <span className="font-bold text-gray-900">House Savings Goal</span>
                     </div>
                     <span className="text-xl font-bold text-green-600">{formatCurrency(houseSavingsGoal)}</span>
+                  </div>
+                  {/* Breakdown */}
+                  <div className="text-sm bg-white p-3 rounded-lg mb-2">
+                    <div className="flex justify-between mb-1">
+                      <span className="text-gray-600">💰 Dream house budget (30%)</span>
+                      <span className="font-semibold text-green-600">{formatCurrency(houseSavingsGoalGross)}</span>
+                    </div>
+                    {currentHousingCost > 0 && (
+                      <div className="flex justify-between mb-1">
+                        <span className="text-gray-600">➖ Current housing costs</span>
+                        <span className="font-semibold text-red-600">-{formatCurrency(currentHousingCost)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between pt-2 border-t border-gray-200">
+                      <span className="font-bold text-gray-900">= Additional savings needed</span>
+                      <span className="font-bold text-green-600">{formatCurrency(houseSavingsGoal)}</span>
+                    </div>
                   </div>
                   <div className="text-sm text-gray-600">
                     <div className="flex justify-between mb-1">
