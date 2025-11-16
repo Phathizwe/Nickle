@@ -17,7 +17,7 @@ const VehicleCalculatorEmotional = () => {
     return location.state?.netSalary || localStorage.getItem('initialNetSalary') || '';
   });
 
-  const [budgetPercentage, setBudgetPercentage] = useState(15);
+  const [budgetPercentage, setBudgetPercentage] = useState(30); // Match homepage: 30% for total vehicle costs
   const [deposit, setDeposit] = useState(0);
   const [term, setTerm] = useState(60);
   const [interestRate, setInterestRate] = useState(11.5);
