@@ -278,7 +278,7 @@ export const exportCarCalculatorToPDF = (netSalary, results, inputs) => {
       ['Monthly Salary', formatCurrency(netSalary)],
       ['Budget for Car', `${inputs.budgetPercentage}%`],
       ['Deposit', formatCurrency(inputs.deposit)],
-      ['Loan Term', `${inputs.term} months`],
+      ['Loan Term', `${inputs.loanTerm} months`],
       ['Interest Rate', `${inputs.interestRate}%`]
     ],
     theme: 'grid',
