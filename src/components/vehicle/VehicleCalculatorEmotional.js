@@ -56,7 +56,13 @@ const VehicleCalculatorEmotional = () => {
       monthlyExpenses: Math.round(monthlyExpenses),
       totalMonthlyCost: Math.round(monthlyBudget),
       deposit: parseFloat(deposit),
-      isWithinBudget: availableForRepayment > 0
+      isWithinBudget: availableForRepayment > 0,
+      // Detailed breakdown for cashflow statement
+      breakdown: {
+        repayment: Math.round(availableForRepayment),
+        insurance: parseFloat(insurance),
+        petrol: parseFloat(petrol)
+      }
     };
   };
 
