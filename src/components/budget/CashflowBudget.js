@@ -790,6 +790,97 @@ const CashflowBudget = () => {
           </CardContent>
         </Card>
 
+        {/* Savings Analysis - BEFORE mode only */}
+        {budgetMode === 'before' && (carBudget || houseBudget) && (
+          <Card className="mt-6 border-2 border-purple-200 shadow-lg">
+            <CardContent className="p-6">
+              <div className="text-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 flex items-center justify-center gap-2">
+                  <span>💡</span>
+                  <span>Your Savings Plan</span>
+                </h2>
+                <p className="text-sm text-gray-600 mt-1">Here's how you'll reach your dreams</p>
+              </div>
+
+              <div className="space-y-4">
+                {/* Car Savings Analysis */}
+                {carBudget && carSavingsGoal > 0 && (
+                  <div className="p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <Car className="h-5 w-5 text-blue-600" />
+                        <span className="font-bold text-gray-900 text-lg">🚗 Dream Car Savings</span>
+                      </div>
+                      <span className="text-2xl font-bold text-blue-600">{formatCurrency(carSavingsGoal)}<span className="text-sm text-gray-600">/month</span></span>
+                    </div>
+                    <div className="bg-white p-3 rounded-lg mb-2">
+                      <div className="text-sm text-gray-600 space-y-1">
+                        <div className="flex justify-between">
+                          <span>30% of salary (${formatCurrency(carSavingsGoalGross)})</span>
+                          <span className="text-gray-400">-</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Current transport ({formatCurrency(currentTransportCost)})</span>
+                          <span className="text-gray-400">=</span>
+                        </div>
+                        <div className="flex justify-between pt-2 border-t border-gray-200 font-semibold text-blue-600">
+                          <span>Net savings needed</span>
+                          <span>{formatCurrency(carSavingsGoal)}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-700">
+                      <div className="flex justify-between items-center">
+                        <span>Target: <span className="font-semibold">{formatCurrency(carUpfrontCosts)}</span> deposit</span>
+                        <span className="font-semibold text-blue-600">
+                          {carSavingsGoal > 0 ? Math.ceil(carUpfrontCosts / carSavingsGoal) : 0} months to save
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* House Savings Analysis */}
+                {houseBudget && houseSavingsGoal > 0 && (
+                  <div className="p-4 bg-green-50 border-2 border-green-200 rounded-lg">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <HomeIcon className="h-5 w-5 text-green-600" />
+                        <span className="font-bold text-gray-900 text-lg">🏠 Dream House Savings</span>
+                      </div>
+                      <span className="text-2xl font-bold text-green-600">{formatCurrency(houseSavingsGoal)}<span className="text-sm text-gray-600">/month</span></span>
+                    </div>
+                    <div className="bg-white p-3 rounded-lg mb-2">
+                      <div className="text-sm text-gray-600 space-y-1">
+                        <div className="flex justify-between">
+                          <span>30% of salary ({formatCurrency(houseSavingsGoalGross)})</span>
+                          <span className="text-gray-400">-</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Current housing ({formatCurrency(currentHousingCost)})</span>
+                          <span className="text-gray-400">=</span>
+                        </div>
+                        <div className="flex justify-between pt-2 border-t border-gray-200 font-semibold text-green-600">
+                          <span>Net savings needed</span>
+                          <span>{formatCurrency(houseSavingsGoal)}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-700">
+                      <div className="flex justify-between items-center">
+                        <span>Target: <span className="font-semibold">{formatCurrency(houseUpfrontCosts)}</span> (deposit + costs)</span>
+                        <span className="font-semibold text-green-600">
+                          {houseSavingsGoal > 0 ? Math.ceil(houseUpfrontCosts / houseSavingsGoal) : 0} months to save
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Call to Action */}
         {!user && (
           <Card className="mt-6 bg-gradient-to-r from-purple-100 to-blue-100 border-2 border-purple-200">
