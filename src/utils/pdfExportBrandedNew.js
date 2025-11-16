@@ -250,6 +250,16 @@ export const exportCashflowWithTimelineToPDF = (netSalary, carBudget, houseBudge
   doc.setTextColor(...COLORS.gray);
   doc.setFont('helvetica', 'normal');
   
+  // Show regular savings breakdown (Emergency Fund, Retirement, Investments)
+  savings.forEach(saving => {
+    if (saving.amount > 0) {
+      doc.text(saving.name, 18, yPos);
+      doc.text(formatCurrency(saving.amount), 192, yPos, { align: 'right' });
+      yPos += 4.5;
+    }
+  });
+  
+  // Show dream savings in BEFORE mode
   if (budgetMode === 'before') {
     if (houseSavingsGoal > 0) {
       doc.setFont('helvetica', 'bold');
