@@ -381,7 +381,7 @@ const HouseCalculatorEmotional = () => {
                           onClick={() => exportHouseCalculatorToPDF(
                             netSalary,
                             results,
-                            { budgetPercentage, interestRate, loanTerm, deposit, ratesAndTaxes, insurance, maintenance }
+                            { budgetPercentage, interestRate, loanTerm: term, downPaymentPercentage, ratesAndTaxes: rates, insurance, maintenance }
                           )}
                           className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white flex items-center justify-center gap-2"
                         >
