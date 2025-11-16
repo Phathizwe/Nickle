@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Card, CardContent } from '../ui/card';
-import { Car, Home as HomeIcon, Sparkles, TrendingUp, Shield, ArrowRight, CheckCircle } from 'lucide-react';
+import { Car, Home as HomeIcon, Sparkles, TrendingUp, Shield, ArrowRight, CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import Meta from '../SEO/Meta';
 
@@ -12,6 +12,7 @@ const HomePageEmotional = () => {
   const [netSalary, setNetSalary] = useState('');
   const [animateIn, setAnimateIn] = useState(false);
   const [celebrateInput, setCelebrateInput] = useState(false);
+  const [showTimeline, setShowTimeline] = useState(false);
 
   useEffect(() => {
     setAnimateIn(true);
@@ -162,6 +163,72 @@ const HomePageEmotional = () => {
               )}
             </CardContent>
           </Card>
+
+          {/* Timeline Expandable Section */}
+          {estimates && (
+            <Card className="mt-6 border-2 border-blue-100 hover:border-blue-200 transition-colors">
+              <CardContent className="p-0">
+                <button
+                  onClick={() => setShowTimeline(!showTimeline)}
+                  className="w-full p-5 flex items-center justify-between hover:bg-blue-50/50 transition-colors rounded-lg"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="text-2xl">💡</div>
+                    <span className="font-semibold text-gray-900 text-left">
+                      Want to know WHEN you can afford this?
+                    </span>
+                  </div>
+                  {showTimeline ? (
+                    <ChevronUp className="h-5 w-5 text-gray-500" />
+                  ) : (
+                    <ChevronDown className="h-5 w-5 text-gray-500" />
+                  )}
+                </button>
+
+                {showTimeline && (
+                  <div className="px-6 pb-6 pt-2 border-t border-gray-100 animate-in slide-in-from-top duration-300">
+                    <p className="text-gray-700 mb-4">
+                      Based on your <span className="font-semibold">{formatCurrency(parseFloat(netSalary))}</span> salary, 
+                      if you save <span className="font-semibold">R 3,000/month</span>:
+                    </p>
+                    <div className="space-y-3 mb-5">
+                      <div className="flex items-start gap-3 bg-blue-50 p-4 rounded-lg">
+                        <Car className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <div className="font-semibold text-gray-900">
+                            Car ({formatCurrency(estimates.carBudget)})
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            Approximately <span className="font-semibold text-blue-600">~{Math.ceil(estimates.carBudget / 3000)} months</span> of saving
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3 bg-green-50 p-4 rounded-lg">
+                        <HomeIcon className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <div className="font-semibold text-gray-900">
+                            House deposit ({formatCurrency(estimates.houseBudget * 0.1)})
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            Approximately <span className="font-semibold text-green-600">~{Math.ceil((estimates.houseBudget * 0.1) / 3000)} months</span> of saving
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() => navigate('/pricing')}
+                      className="w-full bg-blue-600 hover:bg-blue-700"
+                    >
+                      Create a detailed plan to track your progress →
+                    </Button>
+                    <p className="text-xs text-center text-gray-500 mt-3">
+                      Get a personalized budget with exact timelines for both goals
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           <div className="mt-12 flex flex-wrap justify-center gap-6 text-sm text-gray-600">
             <div className="flex items-center gap-2">

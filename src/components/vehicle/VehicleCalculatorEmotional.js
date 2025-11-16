@@ -8,6 +8,7 @@ import { Slider } from '../ui/slider';
 import { Car, Sparkles, TrendingUp, AlertCircle, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import Meta from '../SEO/Meta';
+import DualGoalModal from '../modals/DualGoalModal';
 
 const VehicleCalculatorEmotional = () => {
   const location = useLocation();
@@ -28,6 +29,7 @@ const VehicleCalculatorEmotional = () => {
   
   const [showResults, setShowResults] = useState(false);
   const [celebrateResults, setCelebrateResults] = useState(false);
+  const [showDualGoalModal, setShowDualGoalModal] = useState(false);
 
   // Calculate results in real-time
   const calculateResults = () => {
@@ -68,6 +70,27 @@ const VehicleCalculatorEmotional = () => {
       }
     }
   }, [results?.affordableCarPrice]);
+
+  // Check if user has used both calculators and show modal
+  useEffect(() => {
+    if (!user && results && results.affordableCarPrice > 0) {
+      // Mark that vehicle calculator was used
+      localStorage.setItem('usedVehicleCalculator', 'true');
+      localStorage.setItem('lastCarBudget', results.affordableCarPrice);
+      
+      // Check if both calculators have been used
+      const usedHouse = localStorage.getItem('usedHouseCalculator');
+      const modalShown = sessionStorage.getItem('dualGoalModalShown');
+      
+      if (usedHouse && !modalShown) {
+        // Small delay to let the results settle
+        setTimeout(() => {
+          setShowDualGoalModal(true);
+          sessionStorage.setItem('dualGoalModalShown', 'true');
+        }, 2000);
+      }
+    }
+  }, [results, user]);
 
   const formatCurrency = (value) => {
     if (!value && value !== 0) return 'R 0';
@@ -351,18 +374,51 @@ const VehicleCalculatorEmotional = () => {
                         <Sparkles className="h-6 w-6 text-purple-600" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-bold text-gray-900 mb-2">
-                          💾 Save This Calculation
+                        <h3 className="font-bold text-xl text-gray-900 mb-2">
+                          🎯 Ready to Make This Dream a Reality?
                         </h3>
-                        <p className="text-sm text-gray-600 mb-4">
-                          Sign up to save your car budget, see it alongside your house budget, and access a beautiful dashboard that shows all your financial commitments in one place.
+                        <p className="text-base text-gray-700 mb-3">
+                          You can afford a {formatCurrency(results.affordableCarPrice)} car. Now let's help you get it.
                         </p>
-                        <Button
-                          onClick={() => navigate('/pricing')}
-                          className="bg-purple-600 hover:bg-purple-700"
-                        >
-                          Sign Up - It's Free
-                        </Button>
+                        <div className="bg-white/60 rounded-lg p-4 mb-4">
+                          <div className="text-sm font-semibold text-gray-700 mb-2">Your personalized budget will show:</div>
+                          <div className="space-y-2 text-sm text-gray-600">
+                            <div className="flex items-start gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                              <span>Track your savings progress month by month</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                              <span>See exactly when you can buy your dream car</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                              <span>Manage your car AND house goals in one place</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                              <span>Get a complete budget that keeps you on track</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col sm:flex-row gap-3">
+                          <Button
+                            onClick={() => navigate('/pricing')}
+                            className="bg-purple-600 hover:bg-purple-700 flex-1"
+                          >
+                            Create My Savings Plan - Free
+                          </Button>
+                          <Button
+                            onClick={() => navigate('/about')}
+                            variant="outline"
+                            className="border-purple-300 text-purple-700 hover:bg-purple-50"
+                          >
+                            See How It Works →
+                          </Button>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-3 text-center">
+                          No credit card required • See your timeline in 2 minutes
+                        </p>
                       </div>
                     </div>
                   </CardContent>
@@ -372,6 +428,14 @@ const VehicleCalculatorEmotional = () => {
           </div>
         </div>
       </div>
+
+      {/* Dual Goal Modal */}
+      <DualGoalModal
+        isOpen={showDualGoalModal}
+        onClose={() => setShowDualGoalModal(false)}
+        carBudget={results?.affordableCarPrice || parseFloat(localStorage.getItem('lastCarBudget')) || 0}
+        houseBudget={parseFloat(localStorage.getItem('lastHouseBudget')) || 0}
+      />
     </>
   );
 };
