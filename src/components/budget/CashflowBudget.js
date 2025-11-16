@@ -98,6 +98,32 @@ const CashflowBudget = () => {
     localStorage.setItem('currentTransportCost', currentTransportCost.toString());
   }, [currentTransportCost]);
 
+  // Reload calculator data when component mounts or when returning from calculator pages
+  useEffect(() => {
+    const reloadCalculatorData = () => {
+      const houseSaved = localStorage.getItem('houseCalculation');
+      const carSaved = localStorage.getItem('carCalculation');
+      
+      if (houseSaved) {
+        const houseParsed = JSON.parse(houseSaved);
+        console.log('Reloading house budget:', houseParsed);
+        setHouseBudget(houseParsed);
+      }
+      
+      if (carSaved) {
+        const carParsed = JSON.parse(carSaved);
+        console.log('Reloading car budget:', carParsed);
+        setCarBudget(carParsed);
+      }
+    };
+    
+    reloadCalculatorData();
+    
+    // Also reload when window gains focus (user returns from another page)
+    window.addEventListener('focus', reloadCalculatorData);
+    return () => window.removeEventListener('focus', reloadCalculatorData);
+  }, []);
+
   const formatCurrency = (value) => {
     if (!value && value !== 0) return 'R 0';
     return 'R ' + Math.round(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
