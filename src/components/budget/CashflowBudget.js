@@ -62,6 +62,12 @@ const CashflowBudget = () => {
     localStorage.setItem('savings', JSON.stringify(savings));
   }, [savings]);
 
+  useEffect(() => {
+    if (netSalary) {
+      localStorage.setItem('userSalary', netSalary.toString());
+    }
+  }, [netSalary]);
+
   const formatCurrency = (value) => {
     if (!value && value !== 0) return 'R 0';
     return 'R ' + Math.round(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
@@ -159,13 +165,69 @@ const CashflowBudget = () => {
               </div>
             </div>
 
+            {netSalary === 0 && (
+              <div className="mb-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p className="text-sm text-yellow-800">
+                  💡 <strong>Add your monthly take-home salary</strong> to see your complete cashflow. Click the edit icon to get started!
+                </p>
+              </div>
+            )}
+            
             <div className="space-y-2">
               <div className="flex items-center justify-between py-2 px-3 bg-green-50 rounded-lg">
                 <div className="flex items-center gap-2">
                   <Briefcase className="h-4 w-4 text-green-600" />
                   <span className="text-gray-700">Employment (Net)</span>
                 </div>
-                <span className="font-semibold text-gray-900">{formatCurrency(netSalary)}</span>
+                {editingExpense === 'salary' ? (
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-600 font-semibold">R</span>
+                    <Input
+                      type="number"
+                      value={editingValue}
+                      onChange={(e) => setEditingValue(e.target.value)}
+                      className="w-32 h-8 text-right"
+                      autoFocus
+                    />
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        setNetSalary(parseFloat(editingValue) || 0);
+                        setEditingExpense(null);
+                        setEditingValue('');
+                      }}
+                      className="h-8 bg-green-600 hover:bg-green-700"
+                    >
+                      <Check className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        setEditingExpense(null);
+                        setEditingValue('');
+                      }}
+                      className="h-8"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-gray-900">{formatCurrency(netSalary)}</span>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        setEditingExpense('salary');
+                        setEditingValue(netSalary.toString());
+                      }}
+                      className="h-8 w-8 p-0"
+                    >
+                      <Edit2 className="h-4 w-4 text-gray-500" />
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>
