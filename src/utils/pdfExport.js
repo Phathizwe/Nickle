@@ -296,6 +296,13 @@ export const exportCarCalculatorToPDF = (netSalary, results, inputs) => {
 };
 
 export const exportHouseCalculatorToPDF = (netSalary, results, inputs) => {
+  // Validation
+  if (!results || !results.affordableHousePrice) {
+    console.error('Invalid results object passed to exportHouseCalculatorToPDF:', results);
+    alert('Unable to export PDF: Calculation results are not available. Please ensure the calculator has valid results.');
+    return;
+  }
+  
   const doc = new jsPDF();
   
   // Logo
@@ -345,10 +352,10 @@ export const exportHouseCalculatorToPDF = (netSalary, results, inputs) => {
     startY: yPos,
     head: [['Item', 'Amount']],
     body: [
-      ['Bond Repayment', formatCurrency(results.breakdown.bondRepayment)],
-      ['Rates & Taxes', formatCurrency(results.breakdown.rates)],
-      ['Home Insurance', formatCurrency(results.breakdown.insurance)],
-      ['Maintenance', formatCurrency(results.breakdown.maintenance)],
+      ['Bond Repayment', formatCurrency(results.monthlyRepayment)],
+      ['Rates & Taxes', formatCurrency(inputs.ratesAndTaxes)],
+      ['Home Insurance', formatCurrency(inputs.insurance)],
+      ['Maintenance', formatCurrency(inputs.maintenance)],
       ['Total Monthly Cost', formatCurrency(results.totalMonthlyCost)]
     ],
     theme: 'grid',
@@ -394,7 +401,7 @@ export const exportHouseCalculatorToPDF = (netSalary, results, inputs) => {
       ['Monthly Salary', formatCurrency(netSalary)],
       ['Budget for Housing', `${inputs.budgetPercentage}%`],
       ['Down Payment', `${inputs.downPaymentPercentage}%`],
-      ['Loan Term', `${inputs.term / 12} years`],
+      ['Loan Term', `${inputs.loanTerm / 12} years`],
       ['Interest Rate', `${inputs.interestRate}%`]
     ],
     theme: 'grid',
