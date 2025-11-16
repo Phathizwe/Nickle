@@ -93,15 +93,23 @@ const HomePageModern = () => {
           <div className="text-center mb-8">
             {user ? (
               <>
-                <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
-                  <CheckCircle className="h-4 w-4" />
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-green-100 to-blue-100 text-green-700 px-5 py-2.5 rounded-full text-sm font-bold mb-4 border-2 border-green-200">
+                  <CheckCircle className="h-5 w-5" />
                   Signed In
                 </div>
-                <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-3">
-                  Welcome back! 👋
+                <h1 className="text-4xl md:text-6xl font-extrabold mb-4">
+                  <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent">
+                    Your Dreams Are
+                  </span>
+                  <br />
+                  <span className="text-gray-900">Within Reach! 🎯</span>
                 </h1>
-                <p className="text-lg text-gray-600">
-                  Your budgets are saved and ready
+                <p className="text-xl text-gray-700 max-w-2xl mx-auto">
+                  {(carBudget || houseBudget) ? (
+                    <span>You're on track to afford <span className="font-bold text-blue-600">{carBudget ? 'your dream car' : ''}</span>{carBudget && houseBudget ? ' and ' : ''}<span className="font-bold text-green-600">{houseBudget ? 'your dream home' : ''}</span></span>
+                  ) : (
+                    <span>Let's calculate what you can afford and make it happen</span>
+                  )}
                 </p>
               </>
             ) : (
@@ -294,25 +302,131 @@ const HomePageModern = () => {
             </Card>
           )}
 
-          {/* Calculator Cards */}
+          {/* Calculator Cards - Enhanced for logged-in users */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <CalculatorCard
-              icon={Car}
-              title="Car Calculator"
-              description="Find out how much car you can afford"
-              color="blue"
-              onClick={() => navigate('/vehicle', { state: { netSalary: parseFloat(netSalary) } })}
-              hasCalculation={!!carBudget}
-            />
+            {/* Car Goal Card */}
+            <Card className="border-2 border-blue-200 hover:border-blue-400 transition-all duration-300 hover:shadow-xl cursor-pointer group"
+              onClick={() => navigate('/vehicle-calculator', { state: { netSalary: parseFloat(netSalary) } })}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 bg-blue-100 rounded-xl group-hover:bg-blue-200 transition-colors">
+                    <Car className="h-8 w-8 text-blue-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-gray-900">Car Calculator</h3>
+                    {carBudget ? (
+                      <div className="flex items-center gap-2 text-sm text-green-600 font-semibold">
+                        <CheckCircle className="h-4 w-4" />
+                        Calculation saved
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500">Not calculated yet</p>
+                    )}
+                  </div>
+                </div>
+                
+                {carBudget ? (
+                  <div className="space-y-3">
+                    <div className="bg-blue-50 rounded-lg p-4">
+                      <p className="text-sm text-gray-600 mb-1">You can afford</p>
+                      <p className="text-3xl font-extrabold text-blue-600">
+                        {formatCurrency(carBudget.affordableCarPrice)}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">car budget</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div className="bg-white rounded p-2 border border-gray-200">
+                        <p className="text-gray-500 text-xs">Monthly</p>
+                        <p className="font-bold text-gray-900">{formatCurrency(carBudget.totalMonthlyCost)}</p>
+                      </div>
+                      <div className="bg-white rounded p-2 border border-gray-200">
+                        <p className="text-gray-500 text-xs">Repayment</p>
+                        <p className="font-bold text-gray-900">{formatCurrency(carBudget.monthlyRepayment)}</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-6">
+                    <p className="text-gray-600 mb-4">Find out how much car you can afford</p>
+                    <Button className="bg-blue-600 hover:bg-blue-700 w-full">
+                      Calculate Now →
+                    </Button>
+                  </div>
+                )}
+                
+                {carBudget && (
+                  <Button
+                    variant="outline"
+                    className="w-full mt-4 border-blue-300 text-blue-700 hover:bg-blue-50"
+                  >
+                    Update Calculator →
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
 
-            <CalculatorCard
-              icon={HomeIcon}
-              title="House Calculator"
-              description="Calculate your dream home budget"
-              color="green"
-              onClick={() => navigate('/house', { state: { netSalary: parseFloat(netSalary) } })}
-              hasCalculation={!!houseBudget}
-            />
+            {/* House Goal Card */}
+            <Card className="border-2 border-green-200 hover:border-green-400 transition-all duration-300 hover:shadow-xl cursor-pointer group"
+              onClick={() => navigate('/house-calculator', { state: { netSalary: parseFloat(netSalary) } })}
+            >
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 bg-green-100 rounded-xl group-hover:bg-green-200 transition-colors">
+                    <HomeIcon className="h-8 w-8 text-green-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-gray-900">House Calculator</h3>
+                    {houseBudget ? (
+                      <div className="flex items-center gap-2 text-sm text-green-600 font-semibold">
+                        <CheckCircle className="h-4 w-4" />
+                        Calculation saved
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500">Not calculated yet</p>
+                    )}
+                  </div>
+                </div>
+                
+                {houseBudget ? (
+                  <div className="space-y-3">
+                    <div className="bg-green-50 rounded-lg p-4">
+                      <p className="text-sm text-gray-600 mb-1">You can afford</p>
+                      <p className="text-3xl font-extrabold text-green-600">
+                        {formatCurrency(houseBudget.affordableHousePrice)}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">house budget</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div className="bg-white rounded p-2 border border-gray-200">
+                        <p className="text-gray-500 text-xs">Monthly</p>
+                        <p className="font-bold text-gray-900">{formatCurrency(houseBudget.totalMonthlyCost)}</p>
+                      </div>
+                      <div className="bg-white rounded p-2 border border-gray-200">
+                        <p className="text-gray-500 text-xs">Bond Payment</p>
+                        <p className="font-bold text-gray-900">{formatCurrency(houseBudget.monthlyRepayment)}</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-6">
+                    <p className="text-gray-600 mb-4">Calculate your dream home budget</p>
+                    <Button className="bg-green-600 hover:bg-green-700 w-full">
+                      Calculate Now →
+                    </Button>
+                  </div>
+                )}
+                
+                {houseBudget && (
+                  <Button
+                    variant="outline"
+                    className="w-full mt-4 border-green-300 text-green-700 hover:bg-green-50"
+                  >
+                    Update Calculator →
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
           </div>
 
           {/* Trust Signals */}
