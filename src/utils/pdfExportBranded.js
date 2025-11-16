@@ -13,6 +13,10 @@ const COLORS = {
   white: [255, 255, 255],       // #FFFFFF - Backgrounds
   gray: [107, 114, 128],        // #6B7280 - Secondary text
   lightGray: [240, 240, 240],   // #F0F0F0 - Backgrounds
+  green: [34, 197, 94],         // #22C55E - Green for income
+  orange: [249, 115, 22],       // #F97316 - Orange for expenses
+  purple: [168, 85, 247],       // #A855F7 - Purple for savings
+  blue: [59, 130, 246],         // #3B82F6 - Blue for car
 };
 
 const formatCurrency = (value) => {
