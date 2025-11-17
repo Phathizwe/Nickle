@@ -1,21 +1,27 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const { getPrice } = require('./utils/pricing');
+const { getSubscription, updateSubscription } = require('./utils/subscription');
+const {
+  handlePaymentSucceeded,
+  handlePaymentFailed,
+  handlePaymentRefunded
+} = require('./handlers/webhookHandlers');
 
 // Initialize Firebase Admin
 admin.initializeApp();
 
-const db = admin.firestore();
-
-// Yoco Webhook Handler
+/**
+ * Yoco Webhook Handler
+ * Processes payment events from Yoco
+ */
 exports.yocoWebhook = functions.https.onRequest(async (req, res) => {
-  // Only accept POST requests
   if (req.method !== 'POST') {
     return res.status(405).send('Method Not Allowed');
   }
 
   try {
     const event = req.body;
-    
     console.log('Yoco webhook received:', event.type);
 
     switch (event.type) {
@@ -42,110 +48,11 @@ exports.yocoWebhook = functions.https.onRequest(async (req, res) => {
   }
 });
 
-// Handle successful payment
-async function handlePaymentSucceeded(payment) {
-  const userId = payment.metadata?.userId;
-  
-  if (!userId) {
-    console.error('No userId in payment metadata');
-    return;
-  }
-
-  // Update subscription status
-  const subscriptionRef = db.collection('users').doc(userId).collection('subscriptions').doc('current');
-  
-  await subscriptionRef.set({
-    status: 'active',
-    plan: payment.metadata.plan || 'pro',
-    billingCycle: payment.metadata.billingCycle || 'monthly',
-    currentPeriodStart: admin.firestore.FieldValue.serverTimestamp(),
-    currentPeriodEnd: calculatePeriodEnd(payment.metadata.billingCycle),
-    cancelAtPeriodEnd: false,
-    updatedAt: admin.firestore.FieldValue.serverTimestamp()
-  }, { merge: true });
-
-  // Record payment
-  await db.collection('users').doc(userId).collection('payments').add({
-    amount: payment.amount,
-    currency: payment.currency,
-    status: 'succeeded',
-    yocoPaymentId: payment.id,
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    metadata: payment.metadata
-  });
-
-  console.log(`Payment succeeded for user ${userId}`);
-}
-
-// Handle failed payment
-async function handlePaymentFailed(payment) {
-  const userId = payment.metadata?.userId;
-  
-  if (!userId) {
-    console.error('No userId in payment metadata');
-    return;
-  }
-
-  // Update subscription status to past_due
-  const subscriptionRef = db.collection('users').doc(userId).collection('subscriptions').doc('current');
-  
-  await subscriptionRef.update({
-    status: 'past_due',
-    updatedAt: admin.firestore.FieldValue.serverTimestamp()
-  });
-
-  // Record failed payment
-  await db.collection('users').doc(userId).collection('payments').add({
-    amount: payment.amount,
-    currency: payment.currency,
-    status: 'failed',
-    yocoPaymentId: payment.id,
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    metadata: payment.metadata,
-    failureReason: payment.failureReason
-  });
-
-  console.log(`Payment failed for user ${userId}`);
-}
-
-// Handle refunded payment
-async function handlePaymentRefunded(payment) {
-  const userId = payment.metadata?.userId;
-  
-  if (!userId) {
-    console.error('No userId in payment metadata');
-    return;
-  }
-
-  // Record refund
-  await db.collection('users').doc(userId).collection('payments').add({
-    amount: -payment.amount,
-    currency: payment.currency,
-    status: 'refunded',
-    yocoPaymentId: payment.id,
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    metadata: payment.metadata
-  });
-
-  console.log(`Payment refunded for user ${userId}`);
-}
-
-// Calculate period end based on billing cycle
-function calculatePeriodEnd(billingCycle) {
-  const now = new Date();
-  
-  if (billingCycle === 'yearly') {
-    now.setFullYear(now.getFullYear() + 1);
-  } else {
-    now.setMonth(now.getMonth() + 1);
-  }
-  
-  return admin.firestore.Timestamp.fromDate(now);
-}
-
-// Create Yoco Checkout Session
+/**
+ * Create Yoco Checkout Session
+ * Creates a checkout session for subscription purchase
+ */
 exports.createCheckoutSession = functions.https.onCall(async (data, context) => {
-  // Verify user is authenticated
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
   }
@@ -162,12 +69,11 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
     throw new functions.https.HttpsError('invalid-argument', 'Invalid billing cycle');
   }
 
-  // Calculate amount (in cents)
-  const amount = billingCycle === 'monthly' ? 9900 : 99000; // R99/month or R990/year
-
   try {
-    // In production, you would call Yoco API here to create a checkout session
-    // For now, return a mock checkout URL
+    // Get price from Firestore pricing config
+    const amount = await getPrice(plan, billingCycle);
+
+    // In production, call Yoco API here to create a real checkout session
     const checkoutUrl = `https://checkout.yoco.com/test?amount=${amount}&currency=ZAR&userId=${userId}&plan=${plan}&billingCycle=${billingCycle}`;
 
     return {
@@ -181,7 +87,10 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
   }
 });
 
-// Get subscription status
+/**
+ * Get Subscription Status
+ * Retrieves current subscription status for a user
+ */
 exports.getSubscriptionStatus = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
@@ -190,23 +99,26 @@ exports.getSubscriptionStatus = functions.https.onCall(async (data, context) => 
   const userId = context.auth.uid;
 
   try {
-    const subscriptionDoc = await db.collection('users').doc(userId).collection('subscriptions').doc('current').get();
+    const subscription = await getSubscription(userId);
 
-    if (!subscriptionDoc.exists) {
+    if (!subscription) {
       return {
         status: 'none',
         plan: 'free'
       };
     }
 
-    return subscriptionDoc.data();
+    return subscription;
   } catch (error) {
     console.error('Error getting subscription:', error);
     throw new functions.https.HttpsError('internal', 'Failed to get subscription');
   }
 });
 
-// Cancel subscription
+/**
+ * Cancel Subscription
+ * Marks subscription for cancellation at period end
+ */
 exports.cancelSubscription = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
@@ -215,11 +127,8 @@ exports.cancelSubscription = functions.https.onCall(async (data, context) => {
   const userId = context.auth.uid;
 
   try {
-    const subscriptionRef = db.collection('users').doc(userId).collection('subscriptions').doc('current');
-
-    await subscriptionRef.update({
-      cancelAtPeriodEnd: true,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    await updateSubscription(userId, {
+      cancelAtPeriodEnd: true
     });
 
     return { success: true };
@@ -229,7 +138,10 @@ exports.cancelSubscription = functions.https.onCall(async (data, context) => {
   }
 });
 
-// Reactivate subscription
+/**
+ * Reactivate Subscription
+ * Removes cancellation flag from subscription
+ */
 exports.reactivateSubscription = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
@@ -238,11 +150,8 @@ exports.reactivateSubscription = functions.https.onCall(async (data, context) =>
   const userId = context.auth.uid;
 
   try {
-    const subscriptionRef = db.collection('users').doc(userId).collection('subscriptions').doc('current');
-
-    await subscriptionRef.update({
-      cancelAtPeriodEnd: false,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    await updateSubscription(userId, {
+      cancelAtPeriodEnd: false
     });
 
     return { success: true };
