@@ -68,10 +68,10 @@ function getDefaultPricing() {
         name: 'Free',
         price: { monthly: 0, yearly: 0 }
       },
-      pro: {
-        id: 'pro',
-        name: 'Pro',
-        price: { monthly: 9900, yearly: 99000 }
+      premium: {
+        id: 'premium',
+        name: 'Premium',
+        price: { monthly: 1499, yearly: 11988 } // R14.99/month, R119.88/year
       }
     },
     currency: 'ZAR',

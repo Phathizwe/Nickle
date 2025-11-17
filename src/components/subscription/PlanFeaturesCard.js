@@ -5,7 +5,7 @@ const PlanFeaturesCard = ({ pricing, isFree, onUpgrade }) => {
   if (!pricing || !pricing.plans) return null;
 
   const freePlan = pricing.plans.free;
-  const proPlan = pricing.plans.pro;
+  const premiumPlan = pricing.plans.premium;
 
   const formatPrice = (amount, billingCycle) => {
     if (amount === 0) return 'Free';
@@ -35,17 +35,17 @@ const PlanFeaturesCard = ({ pricing, isFree, onUpgrade }) => {
         </div>
 
         <div className="plan-column pro">
-          <h3>{proPlan.name}</h3>
+          <h3>{premiumPlan.name}</h3>
           <div className="price">
-            {formatPrice(proPlan.price.monthly, 'monthly')}
+            {formatPrice(premiumPlan.price.monthly, 'monthly')}
           </div>
           <ul className="features-list">
-            {proPlan.features.map(renderFeature)}
+            {premiumPlan.features.map(renderFeature)}
           </ul>
           {isFree && (
             <button 
               className="btn-primary" 
-              onClick={() => onUpgrade('pro', 'monthly')}
+              onClick={() => onUpgrade('premium', 'monthly')}
             >
               Upgrade Now
             </button>

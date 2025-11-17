@@ -51,25 +51,29 @@ const getDefaultPricing = () => ({
       name: 'Free',
       price: { monthly: 0, yearly: 0 },
       features: [
-        { name: 'Basic budget tracking', included: true },
-        { name: 'House calculator', included: true },
-        { name: 'Car calculator', included: true },
-        { name: 'PDF exports', included: false },
-        { name: 'Advanced analytics', included: false },
+        { name: 'Basic budget planning', included: true },
+        { name: 'Vehicle cost calculator', included: true },
+        { name: 'House cost calculator', included: true },
+        { name: 'Standard calculations', included: true },
+        { name: 'Basic templates', included: true },
+        { name: 'Save and load calculations', included: false },
+        { name: 'Advanced budget templates', included: false },
+        { name: 'Custom categories', included: false },
+        { name: 'Detailed financial reports', included: false },
         { name: 'Priority support', included: false }
       ]
     },
-    pro: {
-      id: 'pro',
-      name: 'Pro',
-      price: { monthly: 9900, yearly: 99000 },
+    premium: {
+      id: 'premium',
+      name: 'Premium',
+      price: { monthly: 1499, yearly: 11988 }, // R14.99/month, R119.88/year (R9.99/month)
       features: [
         { name: 'Everything in Free', included: true },
-        { name: 'PDF exports', included: true },
-        { name: 'Advanced analytics', included: true },
-        { name: 'Priority support', included: true },
+        { name: 'Save and load calculations', included: true },
+        { name: 'Advanced budget templates', included: true },
         { name: 'Custom categories', included: true },
-        { name: 'Unlimited budgets', included: true }
+        { name: 'Detailed financial reports', included: true },
+        { name: 'Priority support', included: true }
       ]
     }
   },
@@ -77,6 +81,6 @@ const getDefaultPricing = () => ({
   currencySymbol: 'R',
   billingCycles: {
     monthly: { id: 'monthly', name: 'Monthly' },
-    yearly: { id: 'yearly', name: 'Yearly', discount: 0.17 }
+    yearly: { id: 'yearly', name: 'Yearly (Annual)', discount: 0.33 } // 33% savings
   }
 });

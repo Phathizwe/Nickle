@@ -4,9 +4,9 @@ import './ManageSubscription.css';
 const UpgradeModal = ({ show, onClose, pricing, onSelectPlan }) => {
   if (!show || !pricing || !pricing.plans) return null;
 
-  const proPlan = pricing.plans.pro;
-  const monthlyPrice = proPlan.price.monthly;
-  const yearlyPrice = proPlan.price.yearly;
+  const premiumPlan = pricing.plans.premium;
+  const monthlyPrice = premiumPlan.price.monthly;
+  const yearlyPrice = premiumPlan.price.yearly;
   const discount = pricing.billingCycles.yearly.discount;
 
   const formatPrice = (amount) => {
@@ -38,7 +38,7 @@ const UpgradeModal = ({ show, onClose, pricing, onSelectPlan }) => {
             <p>Billed monthly</p>
             <button 
               className="btn-primary" 
-              onClick={() => onSelectPlan('pro', 'monthly')}
+              onClick={() => onSelectPlan('premium', 'monthly')}
             >
               Choose Monthly
             </button>
@@ -56,7 +56,7 @@ const UpgradeModal = ({ show, onClose, pricing, onSelectPlan }) => {
             </p>
             <button 
               className="btn-primary" 
-              onClick={() => onSelectPlan('pro', 'yearly')}
+              onClick={() => onSelectPlan('premium', 'yearly')}
             >
               Choose Yearly
             </button>

@@ -12,7 +12,7 @@ async function handlePaymentSucceeded(payment) {
     return;
   }
 
-  const plan = payment.metadata.plan || 'pro';
+  const plan = payment.metadata.plan || 'premium';
   const billingCycle = payment.metadata.billingCycle || 'monthly';
 
   // Activate subscription

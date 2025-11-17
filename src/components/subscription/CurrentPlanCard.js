@@ -50,7 +50,7 @@ const CurrentPlanCard = ({
           </>
         ) : (
           <>
-            <h3>Pro Plan</h3>
+            <h3>Premium Plan</h3>
             <p className="billing-cycle">
               {subscription.billingCycle === 'monthly' ? 'Monthly' : 'Yearly'} billing
             </p>

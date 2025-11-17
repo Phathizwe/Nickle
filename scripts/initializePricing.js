@@ -25,11 +25,15 @@ const pricingConfig = {
         yearly: 0
       },
       features: [
-        { name: 'Basic budget tracking', included: true },
-        { name: 'House calculator', included: true },
-        { name: 'Car calculator', included: true },
-        { name: 'PDF exports', included: false },
-        { name: 'Advanced analytics', included: false },
+        { name: 'Basic budget planning', included: true },
+        { name: 'Vehicle cost calculator', included: true },
+        { name: 'House cost calculator', included: true },
+        { name: 'Standard calculations', included: true },
+        { name: 'Basic templates', included: true },
+        { name: 'Save and load calculations', included: false },
+        { name: 'Advanced budget templates', included: false },
+        { name: 'Custom categories', included: false },
+        { name: 'Detailed financial reports', included: false },
         { name: 'Priority support', included: false }
       ],
       limits: {
@@ -37,21 +41,21 @@ const pricingConfig = {
         categories: 10
       }
     },
-    pro: {
-      id: 'pro',
-      name: 'Pro',
+    premium: {
+      id: 'premium',
+      name: 'Premium',
       description: 'Full-featured budgeting and analytics',
       price: {
-        monthly: 9900, // R99 in cents
-        yearly: 99000  // R990 in cents (17% savings)
+        monthly: 1499, // R14.99 in cents
+        yearly: 11988  // R119.88 in cents (R9.99/month - 33% savings)
       },
       features: [
         { name: 'Everything in Free', included: true },
-        { name: 'PDF exports', included: true },
-        { name: 'Advanced analytics', included: true },
-        { name: 'Priority support', included: true },
+        { name: 'Save and load calculations', included: true },
+        { name: 'Advanced budget templates', included: true },
         { name: 'Custom categories', included: true },
-        { name: 'Unlimited budgets', included: true }
+        { name: 'Detailed financial reports', included: true },
+        { name: 'Priority support', included: true }
       ],
       limits: {
         budgets: -1, // unlimited
@@ -71,10 +75,10 @@ const pricingConfig = {
     },
     yearly: {
       id: 'yearly',
-      name: 'Yearly',
+      name: 'Yearly (Annual)',
       interval: 'year',
       intervalCount: 1,
-      discount: 0.17 // 17% discount
+      discount: 0.33 // 33% discount (R14.99 vs R9.99/month)
     }
   }
 };
@@ -89,8 +93,8 @@ async function initializePricing() {
     console.log('✅ Pricing configuration initialized successfully!');
     console.log('\nPricing Summary:');
     console.log('- Free Plan: R0');
-    console.log('- Pro Plan Monthly: R99/month');
-    console.log('- Pro Plan Yearly: R990/year (R82.50/month - Save 17%)');
+    console.log('- Premium Monthly: R14.99/month');
+    console.log('- Premium Annual: R119.88/year (R9.99/month - Save 33%)');
     
     process.exit(0);
   } catch (error) {

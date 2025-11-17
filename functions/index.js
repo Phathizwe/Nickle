@@ -61,7 +61,7 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
   const { plan, billingCycle } = data;
 
   // Validate input
-  if (!['pro'].includes(plan)) {
+  if (!['premium'].includes(plan)) {
     throw new functions.https.HttpsError('invalid-argument', 'Invalid plan');
   }
 
