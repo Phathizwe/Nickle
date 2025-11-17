@@ -3,6 +3,7 @@
 import app, { 
   auth, 
   db, 
+  functions,
   googleProvider, 
   microsoftProvider, 
   checkFirestoreConnection,
@@ -14,6 +15,7 @@ export {
   app, 
   auth, 
   db, 
+  functions,
   googleProvider, 
   microsoftProvider, 
   checkFirestoreConnection,

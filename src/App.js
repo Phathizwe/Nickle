@@ -18,6 +18,7 @@ import Start from './components/pages/Start';
 import HomePageEmotional from './components/home/HomePageEmotional';
 import HomePageModern from './components/home/HomePageModern';
 import CashflowBudget from './components/budget/CashflowBudget';
+import ManageSubscription from './components/subscription/ManageSubscription';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { Toaster } from './components/ui/toaster';
@@ -172,6 +173,7 @@ function AppContent() {
                   <Route path="/privacy" element={<LayoutWrapper><Privacy /></LayoutWrapper>} />
                   <Route path="/terms" element={<LayoutWrapper><Terms /></LayoutWrapper>} />
                   <Route path="/pricing" element={<LayoutWrapper><Pricing /></LayoutWrapper>} />
+                  <Route path="/manage-subscription" element={<LayoutWrapper><ManageSubscription /></LayoutWrapper>} />
                 </Routes>
               </main>
               <Footer />

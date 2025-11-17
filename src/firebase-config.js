@@ -2,6 +2,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, OAuthProvider } from 'firebase/auth';
 import { getFirestore, enableIndexedDbPersistence, collection, doc, getDoc } from 'firebase/firestore';
+import { getFunctions } from 'firebase/functions';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDR2XQHw9XEv1SIZZY1Fb5-AZ6xSRtyHUs",
@@ -21,6 +22,9 @@ export const auth = getAuth(app);
 
 // Initialize Firestore with offline persistence
 export const db = getFirestore(app);
+
+// Initialize Firebase Functions
+export const functions = getFunctions(app);
 
 // Enable offline persistence with better error handling
 enableIndexedDbPersistence(db)
