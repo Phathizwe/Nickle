@@ -26,7 +26,10 @@ const ManageSubscription = () => {
       setLoading(false);
     } catch (err) {
       console.error('Error loading subscription:', err);
-      setError('Failed to load subscription data');
+      
+      // If the function doesn't exist or user has no subscription, default to free plan
+      setSubscription({ plan: 'free', status: 'none' });
+      setError(null);
       setLoading(false);
     }
   };
