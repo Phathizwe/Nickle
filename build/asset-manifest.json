@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/static/css/main.0743a764.css",
-    "main.js": "/static/js/main.22837f94.js",
+    "main.css": "/static/css/main.d99ebb00.css",
+    "main.js": "/static/js/main.209329f0.js",
     "static/js/239.03d865ea.chunk.js": "/static/js/239.03d865ea.chunk.js",
     "static/js/213.90fa7817.chunk.js": "/static/js/213.90fa7817.chunk.js",
     "static/js/455.492213f5.chunk.js": "/static/js/455.492213f5.chunk.js",
     "static/media/nickle-logo.png": "/static/media/nickle-logo.ec530058c909aced143c.png",
     "index.html": "/index.html",
-    "main.0743a764.css.map": "/static/css/main.0743a764.css.map",
-    "main.22837f94.js.map": "/static/js/main.22837f94.js.map",
+    "main.d99ebb00.css.map": "/static/css/main.d99ebb00.css.map",
+    "main.209329f0.js.map": "/static/js/main.209329f0.js.map",
     "239.03d865ea.chunk.js.map": "/static/js/239.03d865ea.chunk.js.map",
     "213.90fa7817.chunk.js.map": "/static/js/213.90fa7817.chunk.js.map",
     "455.492213f5.chunk.js.map": "/static/js/455.492213f5.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.0743a764.css",
-    "static/js/main.22837f94.js"
+    "static/css/main.d99ebb00.css",
+    "static/js/main.209329f0.js"
   ]
 }
